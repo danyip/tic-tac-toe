@@ -2,6 +2,8 @@ console.log('tic-tac-toe-hellllo');
 
 
 const boardState = []; // pushing the id of each spot as it is played
+const player1Spots = [];
+const player2Spots = [];
 
 const winningCombinations = [
     ['a1', 'a2', 'a3'],
@@ -15,15 +17,17 @@ const winningCombinations = [
 ]
 
 // check win
-const checkWin = function(){
-            
-    const player1Spots = []
-    
-    for (let i = 0; i < boardState.length ; i++)
+const winCheck = function(playerTurnArray){
 
-    console.log(player1Spots);
-    
-}
+    if (winningCombinations.some(function(array){
+        return array.every(function(index){
+            return playerTurnArray.includes(index)
+        })
+    })){
+        console.log('Win');
+        return true;
+    }
+    }
 
 let p1Turn = true; // Variable to store whos turn it is
 
@@ -34,6 +38,7 @@ $(function(){
 
     // ON CLICK
     $('.board-spot').on('click',function(event){
+        //set the player icon
         const playerIcon = p1Turn? 'red' : 'blue';
 
         const boardSpotId = event.originalEvent.target.id
@@ -42,7 +47,11 @@ $(function(){
         $(this).css('background', playerIcon).off('click');
 
         // push the spot into the game array
-        boardState.push(boardSpotId)
+        boardState.push(boardSpotId);
+
+        //push the spot into the players array
+        p1Turn? player1Spots.push(boardSpotId) : player2Spots.push(boardSpotId);
+
         // console.log(boardState);
 
         
