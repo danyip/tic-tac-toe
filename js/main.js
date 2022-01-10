@@ -1,9 +1,28 @@
 console.log('tic-tac-toe-hellllo');
 
+const player1 = {
+    name: '',
+    spots: [],
+    winCount: 0,
+    icon: 'red'
+}
 
-const boardState = []; // pushing the id of each spot as it is played
-const player1Spots = [];
-const player2Spots = [];
+const player2 = {
+    name: '',
+    spots: [],
+    winCount: 0,
+    icon: 'blue'
+}
+
+
+let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
+// let player1Spots = []; // pushing the id of each spot into each players arrays
+// let player2Spots = [];
+
+// let player1WinCount = 10;
+// let player2WinCount = 0;
+let drawCount = 0;
+let p1Turn = true; // Variable to store whos turn it is
 
 const winningCombinations = [
     ['a1', 'a2', 'a3'],
@@ -16,56 +35,95 @@ const winningCombinations = [
     ['a3', 'b2', 'c1'],
 ]
 
+
 // check win
-const winCheck = function(playerTurnArray){
+const winCheck = function(player){
 
     if (winningCombinations.some(function(array){
         return array.every(function(index){
-            return playerTurnArray.includes(index)
+            return player.spots.includes(index)
         })
     })){
         console.log('Win');
+        player.winCount ++
+        return true;
+    }}
+
+// check draw
+const drawCheck = function(){
+    if (boardState.length === 9){
+        drawCount ++
         return true;
     }
-    }
+}
 
-let p1Turn = true; // Variable to store whos turn it is
 
 $(function(){
-      
 
-
-
-    // ON CLICK
-    $('.board-spot').on('click',function(event){
-        //set the player icon
-        const playerIcon = p1Turn? 'red' : 'blue';
-
-        const boardSpotId = event.originalEvent.target.id
+    const handler = function(event){
+        console.log(boardState);
+        const boardSpotId = event.originalEvent.target.id; // for readability
+        
+        const currentPlayer = p1Turn? player1 : player2;
 
         // mark spot and remove clickability
-        $(this).css('background', playerIcon).off('click');
+        $(this).css('background', currentPlayer.icon).off('click');
 
         // push the spot into the game array
         boardState.push(boardSpotId);
 
-        //push the spot into the players array
-        p1Turn? player1Spots.push(boardSpotId) : player2Spots.push(boardSpotId);
+        //push the spot into the current players spots array
+        currentPlayer.spots.push(boardSpotId)
 
-        // console.log(boardState);
+        console.log(boardState);
+
+
+        if (winCheck(currentPlayer)){
+            console.log('run the win function');
+            updatePage();
+        } else if (drawCheck()){
+            console.log('run the draw function');
+            updatePage();
+        } 
+        
+        p1Turn = !p1Turn;// swap turns
+    }
+
+    $('.board-spot').on('click', handler);
+
+    
+
+    
+    const updatePage = function(){
+        $('.board-spot').off('click');
+
+        // updatescores
+        $('#player1-data .score').html(`${player1.winCount}`);
+        $('#player2-data .score').html(`${player2.winCount}`);
+        $('#draw-data .score').html(`${drawCount}`);
 
         
-        // check draw
-        
-        
-        // swap turns
-        p1Turn = !p1Turn;
+    }
 
-    })
+    const resetBoard = function(){
+        // reset the board for next round
+        $('.board-spot').css('background', '');
+        $('.board-spot').on('click', handler);
+        player1.spots.length = 0;
+        player2.spots = [];
+        boardState = [];
+ 
+         
+    }
 
-
+    $('#update').on('click', resetBoard)
+    
+    // $('#player2-data img').attr('src', `/images/Red_X.svg`) // change players icon
 
 })
+
+
+
 
 
 
