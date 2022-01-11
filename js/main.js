@@ -64,8 +64,6 @@ const winCheck = function(player){
 
         gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
         
-         
-        
         return true;
     }
 }
@@ -128,14 +126,18 @@ $(function(){
         if (winCheck(currentPlayer)){
             //RUN THE WIN FUNCTION
             updatePage();
+            $("#game-over-cover").css('display', 'flex')
 
         } else if (drawCheck()){
             //RUN THE DRAW FUNCTION
             updatePage();
+            $("#game-over-cover").css('display', 'flex')
         } 
         
         p1Turn = !p1Turn;// swap turns
     }
+
+    
 
     
 
@@ -161,7 +163,6 @@ $(function(){
         gameData.currentGame++
 
         p1Turn = true; // back to player 1 to start //TODO: make this track who started last.
-
     }
 
     //TEMP RESET BOARD
@@ -169,43 +170,65 @@ $(function(){
     
     
 
-    // WELCOME PAGE ICON SELECTION
+    // WELCOME PAGE ICON SELECTION 
+    //TODO: i think this would work better adding and removing classes that are already defined in css
     $('input[type=radio]').on('click',function(){
         console.log($(this).siblings());
-        $('.icon').css({
-            width: '100px',
-            opacity: '50%'
-        });
 
-        $(this).siblings().css({
-            width: '120px',
-            opacity: '100%'
-        })
+        $('.icon').removeClass('icon-big');
+        $('.icon').addClass('icon-small');
+
+        $(this).siblings().removeClass('icon-small')
+        $(this).siblings().addClass('icon-big')
+
     })
 
     //SUBMIT BUTTON
     $('#start-wrapper input[type=button]').on('click', function(){
-        
-        
-        const currentPlayer = !player1Selected ? player1 : player2
 
         const enteredName = $('input[type="text"]').val();
+
         const selectedIcon = $('input[name="icons"]:checked').siblings().attr('src');
-        
-        player1.name = enteredName;
-        player1.icon = selectedIcon;
 
-        $('#player1-data .player-name').html(`${enteredName}`) // change players icon
-        $('#player1-data img').attr('src', `${selectedIcon}`) // change players icon
-        
-        console.log(selectedIcon, enteredName);
+        if (!player1Selected){
+            player1.name = enteredName;
+            player1.icon = selectedIcon;
 
-        updatePage()
+            $('#player1-data .player-name').html(`${enteredName}`) // change players name
+            $('#player1-data img').attr('src', `${selectedIcon}`) // change players icon
+            $('input[name="icons"]:checked').parent().css('visibility', 'hidden')
+            $('input[name="icons"]:checked').prop('checked', false)
 
-        $('#start-screen-cover').css('display', 'none');
+            player1Selected = true;
 
-        $('.board-spot').on('click', handler);
+             // reset icons for player 2
+            $('.icon').removeClass('icon-big');
+            $('.icon').removeClass('icon-small');
 
+            $('#start-screen-cover h1').html('Hello Player 2')
+
+            
+        } else {
+            console.log($('input[name="icons"]:checked'));
+            player2.name = enteredName;
+            player2.icon = selectedIcon;
+
+            $('#player2-data .player-name').html(`${enteredName}`) // change players name
+            $('#player2-data img').attr('src', `${selectedIcon}`) // change players icon
+
+            player2Selected = true;
+
+            $('#start-screen-cover').css('display', 'none');
+            $('.board-spot').on('click', handler);
+
+        }
+
+    })
+
+    // REMATCH BUTTON
+    $(`#game-over-cover input[type="button"]`).on('click', function(){
+          resetBoard()
+          $("#game-over-cover").css('display', 'none')
     })
 
 })
@@ -220,12 +243,6 @@ ORDER OF OPERATIONS
 3. select player 1 name and icon
     a. if multi player - select player 2 name and icon
 4. hide the welcome screen and start the game
-
-
-
-
-
-
 
 
 */

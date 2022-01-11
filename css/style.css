@@ -29,7 +29,7 @@ body {
     left: 200px;
 }
 
-#start-screen-cover {
+#start-screen-cover{
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     position: absolute;
@@ -39,11 +39,25 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 1;
-    /* display: none; */
 }
 
-#start-wrapper {
+#game-over-cover {
+    background-color: rgba(255, 255, 255, 0.527);
+    color: rgb(0, 0, 0);
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
 
+.disp-none {
+    display: none;
+}
+
+#start-wrapper, #game-over-wrapper {
     /* background-color: blue; */
     width: fit-content;
     margin: 0 auto;
@@ -77,6 +91,16 @@ body {
 
 .icon:hover {
     width: 120%;
+}
+
+.icon-small{
+    width: 100px;
+    opacity: 50%;
+}
+
+.icon-big{
+    width: 120px;
+    opacity: 100%;
 }
 
 main {
@@ -164,4 +188,6 @@ main {
 #draw-data {
     grid-area: draw;
 }
+
+
 
