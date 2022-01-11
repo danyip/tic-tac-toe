@@ -1,33 +1,25 @@
 console.log('tic-tac-toe-hellllo');
 
-
 //GLOBAL VARIABLES
 
 const player1 = {
     name: '',
     spots: [],
     winCount: 0,
-    icon: 'images/icons/Capsicum.svg'
+    icon: ''
 }
 
 const player2 = {
     name: '',
     spots: [],
     winCount: 0,
-    icon: 'images/icons/Banana.svg'
+    icon: ''
 }
 
 const gameData = {
     currentGame: 1,
     previous: {},
 }
-
-let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
-let drawCount = 0; // counting the draws
-let p1Turn = true; // Variable to store whos turn it is
-let gameCount = 0;
-let player1Selected = false;
-let player2Selected = false;
 
 const winningCombinations = [
     ['a1', 'a2', 'a3'],
@@ -40,8 +32,12 @@ const winningCombinations = [
     ['a3', 'b2', 'c1'],
 ]
 
+let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
+let drawCount = 0; // counting the draws
+let p1Turn = true; // Variable to store whos turn it is
+let player1Selected = false; // Has player 1 entered their name and chosen an icon
+let player2Selected = false; // Has player 2 entered their name and chosen an icon
 
-//GLOBAL FUNCTIONS
 
 // CHECKING FOR WINS
 const winCheck = function(player){
@@ -88,58 +84,40 @@ const drawCheck = function(){
 $(function(){
 
 
-    
-
     //This probably needs a rename...  but its basically the function that runs each click.
     const handler = function(event){
         
         const boardSpotId = event.originalEvent.target.id; // for readability
 
-        //TRYING TO STOP FAST CLICKING FROM PUSHING BAD DATA...
-        if (boardState.includes(boardSpotId)){ 
+        if (boardState.includes(boardSpotId)){ // check if the spot has already been clicked
             return;
         }
 
         const currentPlayer = p1Turn? player1 : player2; // set the current player base on whos turn it is
-         console.log(currentPlayer.icon);
-        // mark spot and remove clickability
-
+        
+        // mark the spot with the players logo
         const $newImg = $('<img class="placed-icon">');
         $newImg.attr('src', `${currentPlayer.icon}`);
         $(this).append($newImg)
 
+                
+        boardState.push(boardSpotId); // push the spot into the game array
+        currentPlayer.spots.push(boardSpotId) // push the spot into the current players spots array
 
-        // $(this).css({
-        //     background: `url(${currentPlayer.icon})`,
-
-        // }).off('click');
-
-        $('body').css('background', );
-
-        // push the spot into the game array
-        boardState.push(boardSpotId);
-
-        // push the spot into the current players spots array
-        currentPlayer.spots.push(boardSpotId)
-
-        
         if (winCheck(currentPlayer)){
-            //RUN THE WIN FUNCTION
             updatePage();
+            $("#game-over-cover p").html(`${currentPlayer.name} is the winner!`)
+            $("#game-over-cover img").attr('src', currentPlayer.icon)
             $("#game-over-cover").css('display', 'flex')
 
         } else if (drawCheck()){
-            //RUN THE DRAW FUNCTION
             updatePage();
+            $("#game-over-cover p").html(`It's a draw!`)
             $("#game-over-cover").css('display', 'flex')
         } 
         
         p1Turn = !p1Turn;// swap turns
     }
-
-    
-
-    
 
     const updatePage = function(){
         $('.board-spot').off('click'); // turn off the click event on the board
@@ -152,7 +130,7 @@ $(function(){
     }
 
     const resetBoard = function(){
-        // reset the board for next round
+        
         $('.placed-icon').remove(); // remove images from divs
         $('.board-spot').on('click', handler); // turn the clicks back on
         $('#game-number').html(gameData.currentGame) // update the game counter
@@ -165,13 +143,7 @@ $(function(){
         p1Turn = true; // back to player 1 to start //TODO: make this track who started last.
     }
 
-    //TEMP RESET BOARD
-    $('#reset').on('click', resetBoard)
-    
-    
-
     // WELCOME PAGE ICON SELECTION 
-    //TODO: i think this would work better adding and removing classes that are already defined in css
     $('input[type=radio]').on('click',function(){
         console.log($(this).siblings());
 
@@ -187,40 +159,37 @@ $(function(){
     $('#start-wrapper input[type=button]').on('click', function(){
 
         const enteredName = $('input[type="text"]').val();
-
         const selectedIcon = $('input[name="icons"]:checked').siblings().attr('src');
 
         if (!player1Selected){
-            player1.name = enteredName;
-            player1.icon = selectedIcon;
+            player1.name = enteredName; //set the name in the players object
+            player1.icon = selectedIcon; //set the icon in ple players object
 
             $('#player1-data .player-name').html(`${enteredName}`) // change players name
             $('#player1-data img').attr('src', `${selectedIcon}`) // change players icon
-            $('input[name="icons"]:checked').parent().css('visibility', 'hidden')
-            $('input[name="icons"]:checked').prop('checked', false)
+            $('input[name="icons"]:checked').parent().css('visibility', 'hidden') // hide the icon that was clicked
+            $('input[name="icons"]:checked').prop('checked', false) // turn off its radio selection
 
             player1Selected = true;
 
-             // reset icons for player 2
-            $('.icon').removeClass('icon-big');
-            $('.icon').removeClass('icon-small');
-
-            $('#start-screen-cover h1').html('Hello Player 2')
+             
+            $('.icon').removeClass('icon-big'); // reset icon states for player 2
+            $('.icon').removeClass('icon-small'); // reset icon states for player 2
+            $('#start-screen-cover h1').html('Hello Player 2') //change the message to player 2
 
             
         } else {
-            console.log($('input[name="icons"]:checked'));
-            player2.name = enteredName;
-            player2.icon = selectedIcon;
+            player2.name = enteredName; //set the name in the players object
+            player2.icon = selectedIcon; //set the icon in ple players object
 
             $('#player2-data .player-name').html(`${enteredName}`) // change players name
             $('#player2-data img').attr('src', `${selectedIcon}`) // change players icon
 
             player2Selected = true;
 
-            $('#start-screen-cover').css('display', 'none');
-            $('.board-spot').on('click', handler);
+            $('#start-screen-cover').css('display', 'none'); // hide the screen cover 
 
+            $('.board-spot').on('click', handler); // turn on the board
         }
 
     })
@@ -232,21 +201,6 @@ $(function(){
     })
 
 })
-
-
-
-/*
-
-ORDER OF OPERATIONS
-1. page load
-2. display welcome screen / select game type - single or multiplayer
-3. select player 1 name and icon
-    a. if multi player - select player 2 name and icon
-4. hide the welcome screen and start the game
-
-
-*/
-
 
 
 

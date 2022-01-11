@@ -2,12 +2,13 @@
 
 
 * {
-    /* border: 1px solid red; */
+    border: 1px solid red;
     box-sizing: border-box;  
 }
 
 :root {
     --main-width: 80vw;
+    --icon-size: 8vw;
     font-family: 'Balsamiq Sans', cursive;
 }
 
@@ -18,16 +19,23 @@ html {
 
 body {
     /* border-color: aqua; */
+    height: 100vh;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-/* TODO: REMOVE THIS ONCE TESTING IS DONE */
-#reset { 
-    position: absolute;
-
-    top: 500px;
-    left: 200px;
+main {
+    /* border-color: blue; */
+    width: var(--main-width);
+    margin: 0 auto;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
 }
+
 
 #start-screen-cover{
     background-color: rgb(255, 255, 255);
@@ -36,35 +44,35 @@ body {
     width: 100vw;
     height: 100vh;
     display: flex;
+    /* display: none; */
     align-items: center;
     justify-content: center;
     z-index: 1;
 }
 
 #game-over-cover {
-    background-color: rgba(255, 255, 255, 0.527);
-    color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.609);
+    color: rgb(255, 255, 255);
     position: absolute;
     width: 100vw;
     height: 100vh;
     display: none;
+    /* display: flex; */
     align-items: center;
     justify-content: center;
     z-index: 1;
-}
-
-.disp-none {
-    display: none;
+    font-size: 2em;
 }
 
 #start-wrapper, #game-over-wrapper {
     /* background-color: blue; */
-    width: fit-content;
+    width: var(--main-width);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 #icon-grid{
@@ -72,6 +80,13 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 10px;
+    margin: 20px 0;
+}
+
+@media screen and (max-width: 800px) {
+    #icon-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }
 
 .icon-wrapper {
@@ -83,32 +98,34 @@ body {
     justify-content: center;
 }
 
+@media screen and (max-width: 800px) {
+    .icon-wrapper {
+        width: 80px;
+        height: 80px;
+    }
+}
+
 .icon {
     /* border: 1px solid white; */
-    width: 100px;
+    width: 80%;
     transition: 500ms;
 }
 
 .icon:hover {
-    width: 120%;
+    width: 100%;
 }
 
 .icon-small{
-    width: 100px;
+    width: 80%;
     opacity: 50%;
 }
 
 .icon-big{
-    width: 120px;
+    width: 100%;
     opacity: 100%;
 }
 
-main {
-    /* border-color: blue; */
-    width: var(--main-width);
-    margin: 0 auto;
-    height: 100vh;
-}
+
 
 #board-heading{
     text-align: center;
@@ -142,6 +159,10 @@ main {
     position: absolute;
 }
 
+.placed-icon {
+    width: 80%
+}
+
 #game-data-wrapper{
     width: fit-content;
     margin: 0 auto;
@@ -172,7 +193,7 @@ main {
 }
 
 .player-wrapper img{
-    width: 50px;
+    width: 80px;
     display: block;
     margin: 0 auto;
 }
