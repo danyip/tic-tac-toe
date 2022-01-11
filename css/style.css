@@ -2,7 +2,7 @@
 
 
 * {
-    border: 1px solid red;
+    /* border: 1px solid red;       */
     box-sizing: border-box;  
 }
 
@@ -10,6 +10,12 @@
     --main-width: 80vw;
     --icon-size: 8vw;
     font-family: 'Balsamiq Sans', cursive;
+}
+
+@media screen and (min-width: 800px) {
+    :root {
+        --main-width: 700px
+    }   
 }
 
 html {

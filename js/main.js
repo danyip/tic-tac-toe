@@ -1,4 +1,28 @@
-console.log('tic-tac-toe-hellllo');
+
+// TODO LIST
+    //TODO: put some conditionals on the submit button to force a name and icon selection 
+
+    //TODO: clear the player name field before player 2
+
+    //TODO: style the text box and submit/rematch buttons
+
+    //TODO: add a min width media query to the game board
+
+    //TODO: fix the icon on the game over screen...
+
+    // Use LocalStorage to persist data locally to allow games to continue after page refresh or loss of internet connectivity
+
+    // Support custom board sizes: default is 3x3 but you could allow users to choose a larger board
+
+    // Support networked multiplayer: https://www.firebase.com/ has a nice quickstart guide
+
+    // Create an AI opponent: teach Javascript to play an unbeatable game against you
+
+    // Start by implementing a few simple rules which can be easily checked and are always good moves, such as "always take the center square if it's available" - you can google these rules for yourself
+
+    // You can build in as many AI player rules as you like but you'll quickly end up with a longwinded list of if-else-if statements. To make a truly unbeatable AI opponent you'll need to look into implementing a recursive full-game-tree algorithm like MiniMax - for advanced/bold students only!
+
+
 
 //GLOBAL VARIABLES
 
@@ -37,6 +61,11 @@ let drawCount = 0; // counting the draws
 let p1Turn = true; // Variable to store whos turn it is
 let player1Selected = false; // Has player 1 entered their name and chosen an icon
 let player2Selected = false; // Has player 2 entered their name and chosen an icon
+let singlePlayerGame = true; // Triggers a game against the AI
+
+
+
+
 
 
 // CHECKING FOR WINS
@@ -91,14 +120,14 @@ $(function(){
 
         if (boardState.includes(boardSpotId)){ // check if the spot has already been clicked
             return;
-        }
+        };
 
         const currentPlayer = p1Turn? player1 : player2; // set the current player base on whos turn it is
         
         // mark the spot with the players logo
         const $newImg = $('<img class="placed-icon">');
         $newImg.attr('src', `${currentPlayer.icon}`);
-        $(this).append($newImg)
+        $(this).append($newImg);
 
                 
         boardState.push(boardSpotId); // push the spot into the game array
@@ -106,21 +135,28 @@ $(function(){
 
         if (winCheck(currentPlayer)){
             updatePage();
-            $("#game-over-cover p").html(`${currentPlayer.name} is the winner!`)
-            $("#game-over-cover img").attr('src', currentPlayer.icon)
-            $("#game-over-cover").css('display', 'flex')
+            $("#game-over-cover p").html(`${currentPlayer.name} is the winner!`);
+            $("#game-over-cover img").attr('src', `${currentPlayer.icon}`);
+            $("#game-over-cover").css('display', 'flex');
+            return;
 
         } else if (drawCheck()){
             updatePage();
-            $("#game-over-cover p").html(`It's a draw!`)
-            $("#game-over-cover").css('display', 'flex')
+            $("#game-over-cover p").html(`It's a draw!`);
+            $("#game-over-cover").css('display', 'flex');
+            return;
         } 
         
         p1Turn = !p1Turn;// swap turns
+
+        if (singlePlayerGame) {
+            aiMove();
+        };
+
     }
 
     const updatePage = function(){
-        $('.board-spot').off('click'); // turn off the click event on the board
+        $('.board-spot').off('click'); // turn off the click events on the board
 
         // updatescores on page
         $('#player1-data .score').html(`${player1.winCount}`);
@@ -139,6 +175,7 @@ $(function(){
         player1.spots = []; 
         player2.spots = [];
         gameData.currentGame++
+
 
         p1Turn = true; // back to player 1 to start //TODO: make this track who started last.
     }
@@ -172,12 +209,27 @@ $(function(){
 
             player1Selected = true;
 
+            if(singlePlayerGame){ // Set the ai to player 2
+
+                player2.name = 'Beep Bop Computer'; //set the name in the players object
+                player2.icon = 'images/icons/robot.svg'; //set the icon in ple players object
+
+            $('#player2-data .player-name').html('Beep Bop Computer') // change players name
+            $('#player2-data img').attr('src', 'images/icons/robot.svg') // change players icon
+
+            player2Selected = true;
+
+            $('#start-screen-cover').css('display', 'none'); // hide the screen cover 
+
+            $('.board-spot').on('click', handler); // turn on the board
+
+            }
+
              
             $('.icon').removeClass('icon-big'); // reset icon states for player 2
             $('.icon').removeClass('icon-small'); // reset icon states for player 2
             $('#start-screen-cover h1').html('Hello Player 2') //change the message to player 2
 
-            
         } else {
             player2.name = enteredName; //set the name in the players object
             player2.icon = selectedIcon; //set the icon in ple players object
@@ -196,10 +248,74 @@ $(function(){
 
     // REMATCH BUTTON
     $(`#game-over-cover input[type="button"]`).on('click', function(){
-          resetBoard()
-          $("#game-over-cover").css('display', 'none')
+          resetBoard();
+          $("#game-over-cover").css('display', 'none');
     })
 
+    // AI TAKES A TURN
+    const aiMove = function(){
+        // choose a spot
+        
+        
+        
+        const aiPick = aiLogic();
+            
+        //MARK THE SPOT AND FINISH THE TURN
+        const $newImg = $('<img class="placed-icon">'); //make a new img
+        $newImg.attr('src', `${player2.icon}`); //assign it the p2 image
+
+        // setTimeout(function(){
+            $(`#${aiPick}`).append($newImg);//append it to the div
+        // }, 1000)
+
+         
+
+        boardState.push(aiPick); // push the spot into the game array
+        player2.spots.push(aiPick); // push the spot into the current players spots array
+
+            if (winCheck(player2)){
+                updatePage();
+                $("#game-over-cover p").html(`${player2.name} is the winner!`)
+                $("#game-over-cover img").attr('src', `${player2.icon}`)
+                $("#game-over-cover").css('display', 'flex')
+                return;
+
+            } else if (drawCheck()){
+                updatePage();
+                $("#game-over-cover p").html(`It's a draw!`)
+                $("#game-over-cover").css('display', 'flex')
+                return;
+            } 
+
+            p1Turn = !p1Turn;
+            
+            
+    };
+
+    //TODO: WRITE THIS AI STUFF :)
+    const aiLogic = function(){
+        //make an array of all board spots
+        const gameBoard = []; 
+        $('.board-spot').each(function(){
+            gameBoard.push($(this).attr('id'))
+        });
+
+         
+        const availableSpots = gameBoard.slice(0);//make a copy of all board spots so i can
+        boardState.forEach(function(spot){ //loop the current board state
+            let i = availableSpots.indexOf(spot); //grab each taken spots array index in available spots
+            availableSpots.splice(i, 1) //remove them from the available spots
+        });
+
+        // choose a random spot from the available spots
+        const randomSpot = Math.floor(Math.random()*availableSpots.length);
+        return availableSpots[randomSpot];
+     
+
+        
+   
+    };
+  
 })
 
 
