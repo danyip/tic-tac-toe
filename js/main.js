@@ -8,8 +8,6 @@
 
     //TODO: add a min width media query to the game board
 
-    //TODO: fix the icon on the game over screen...
-
     // Use LocalStorage to persist data locally to allow games to continue after page refresh or loss of internet connectivity
 
     // Support custom board sizes: default is 3x3 but you could allow users to choose a larger board
@@ -61,7 +59,7 @@ let drawCount = 0; // counting the draws
 let p1Turn = true; // Variable to store whos turn it is
 let player1Selected = false; // Has player 1 entered their name and chosen an icon
 let player2Selected = false; // Has player 2 entered their name and chosen an icon
-let singlePlayerGame = true; // Triggers a game against the AI
+let singlePlayerGame = false; // Triggers a game against the AI
 
 
 
@@ -118,6 +116,8 @@ $(function(){
         
         const boardSpotId = event.originalEvent.target.id; // for readability
 
+        $('.hover-icon').remove(); // turns off the hover effect on the spot
+
         if (boardState.includes(boardSpotId)){ // check if the spot has already been clicked
             return;
         };
@@ -136,6 +136,7 @@ $(function(){
         if (winCheck(currentPlayer)){
             updatePage();
             $("#game-over-cover p").html(`${currentPlayer.name} is the winner!`);
+            // debugger
             $("#game-over-cover img").attr('src', `${currentPlayer.icon}`);
             $("#game-over-cover").css('display', 'flex');
             return;
@@ -182,8 +183,7 @@ $(function(){
 
     // WELCOME PAGE ICON SELECTION 
     $('input[type=radio]').on('click',function(){
-        console.log($(this).siblings());
-
+        
         $('.icon').removeClass('icon-big');
         $('.icon').addClass('icon-small');
 
@@ -192,7 +192,7 @@ $(function(){
 
     })
 
-    //SUBMIT BUTTON
+    //SUBMIT BUTTON ############## GAME STARTS HERE ##################
     $('#start-wrapper input[type=button]').on('click', function(){
 
         const enteredName = $('input[type="text"]').val();
@@ -204,7 +204,9 @@ $(function(){
 
             $('#player1-data .player-name').html(`${enteredName}`) // change players name
             $('#player1-data img').attr('src', `${selectedIcon}`) // change players icon
+
             $('input[name="icons"]:checked').parent().css('visibility', 'hidden') // hide the icon that was clicked
+            
             $('input[name="icons"]:checked').prop('checked', false) // turn off its radio selection
 
             player1Selected = true;
@@ -214,15 +216,15 @@ $(function(){
                 player2.name = 'Beep Bop Computer'; //set the name in the players object
                 player2.icon = 'images/icons/robot.svg'; //set the icon in ple players object
 
-            $('#player2-data .player-name').html('Beep Bop Computer') // change players name
-            $('#player2-data img').attr('src', 'images/icons/robot.svg') // change players icon
+                $('#player2-data .player-name').html('Beep Bop Computer') // change players name
+                $('#player2-data img').attr('src', 'images/icons/robot.svg') // change players icon
 
-            player2Selected = true;
+                 player2Selected = true;
 
-            $('#start-screen-cover').css('display', 'none'); // hide the screen cover 
+                $('#start-screen-cover').css('display', 'none'); // hide the screen cover
+                $('main').show() 
 
-            $('.board-spot').on('click', handler); // turn on the board
-
+                $('.board-spot').on('click', handler); // turn on the board
             }
 
              
@@ -242,6 +244,7 @@ $(function(){
             $('#start-screen-cover').css('display', 'none'); // hide the screen cover 
 
             $('.board-spot').on('click', handler); // turn on the board
+            $('main').show()
         }
 
     })
@@ -249,7 +252,7 @@ $(function(){
     // REMATCH BUTTON
     $(`#game-over-cover input[type="button"]`).on('click', function(){
           resetBoard();
-          $("#game-over-cover").css('display', 'none');
+          $("#game-over-cover").hide();
     })
 
     // AI TAKES A TURN
@@ -292,7 +295,7 @@ $(function(){
             
     };
 
-    //TODO: WRITE THIS AI STUFF :)
+    // AI CHOOSES A SPOT - randomly...
     const aiLogic = function(){
         //make an array of all board spots
         const gameBoard = []; 
@@ -315,6 +318,45 @@ $(function(){
         
    
     };
+
+    
+    // MULTIPLAYER BUTTON
+    $('#welcome-cover #multiplayer').on('click', function(){
+        singlePlayerGame = false;
+        $('#welcome-cover').hide();
+        $('#start-screen-cover').show();
+    });
+
+    // SINGLE PLAYER BUTTON
+    $('#welcome-cover #single-player').on('click', function(){
+        singlePlayerGame = true;
+        $('#welcome-cover').hide();
+        $('#start-screen-cover').show();
+    });
+
+    // HOVER SPOT
+    $('.board-spot').on('mouseover', function(){
+
+        
+        if ($(this).children().length === 1){
+            console.log('already filled');
+            return
+        }
+        
+        const icon = p1Turn? player1.icon : player2.icon;
+
+        const $newImg = $('<img class="hover-icon">');
+        $newImg.attr('src', `${icon}`);
+        
+        $(this).append($newImg);
+
+    })
+
+    // REMOVE HOVER
+    $('.board-spot').on('mouseout', function(){
+        $('.hover-icon').remove();
+    })
+       
   
 })
 
