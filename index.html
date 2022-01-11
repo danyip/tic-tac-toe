@@ -13,9 +13,164 @@
     <title>tic-tac-toe</title>
 </head>
 <body>
-    <p id="update">update page function</p>
+    <button id='reset'>RESET</button>
+
+    <div id="start-screen-cover">
+        <form id="start-wrapper">
+            <h1>Welcome to tic tac toe</h1>
+            
+            <input type="text" placeholder="Enter your name">
+            <div id="icon-grid">
+                
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-potato"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C10 Potato.svg" 
+                    alt="Potato Icon" 
+                    class="icon"
+                    id="potato"
+                    >
+                </label>
+
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-lobster"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C224 Lobster.svg" 
+                    alt="Lobster Icon" 
+                    class="icon"
+                    id="lobster"
+                    >
+                </label>    
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-donut"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C228 Donut.svg" 
+                    alt="Donut Icon" 
+                    class="icon"
+                    id="donut"
+                    >
+                </label>    
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-grapes"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C229 Grapes.svg" 
+                    alt="Grapes Icon" 
+                    class="icon"
+                    id="grapes"
+                    >
+                </label>    
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-banana"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C33 Banana.svg" 
+                    alt="Banana Icon" 
+                    class="icon"
+                    id="banana"
+                    >
+                </label>    
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-pineapple"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C49 Pineapple.svg" 
+                    alt="Pineapple Icon" 
+                    class="icon"
+                    id="pineapple"
+                    >
+                </label>   
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-taco"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C65 Taco.svg" 
+                    alt="Taco Icon" 
+                    class="icon"
+                    id="taco"
+                    >
+                </label>  
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-pepper"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/food C247 Bell Pepper.svg" 
+                    alt="Pepper Icon" 
+                    class="icon"
+                    id="pepper"
+                    >
+                </label> 
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-egg"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C203 Fried Egg.svg" 
+                    alt="Egg Icon" 
+                    class="icon"
+                    id="egg"
+                    >
+                </label>  
+                <label class="icon-wrapper">
+                    <input 
+                    type="radio" 
+                    name="icons" 
+                    id="radio-sushi"
+                    style="display: none;"
+                    >
+                    <img 
+                    src="images/icons/Food C212 Salmon Sushi.svg" 
+                    alt="Sushu Icon" 
+                    class="icon"
+                    id="sushi"
+                    >
+                </label> 
+            </div>
+            <input type="button" value="Submit">
+        </form>
+    </div>
+
     <main>
         <h1 id="board-heading"> tic-tac-toe</h1>
+        <p id="game-number"></p>
         <div id="game-board">
             <div id="a1" class="board-spot"></div>
             <div id="a2" class="board-spot"></div>

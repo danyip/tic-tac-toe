@@ -1,5 +1,8 @@
 console.log('tic-tac-toe-hellllo');
 
+
+
+
 const player1 = {
     name: '',
     spots: [],
@@ -14,15 +17,15 @@ const player2 = {
     icon: 'blue'
 }
 
+const gameData = {
+    currentGame: 1,
+    previous: {},
+}
 
 let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
-// let player1Spots = []; // pushing the id of each spot into each players arrays
-// let player2Spots = [];
-
-// let player1WinCount = 10;
-// let player2WinCount = 0;
-let drawCount = 0;
+let drawCount = 0; // counting the draws
 let p1Turn = true; // Variable to store whos turn it is
+let gameCount = 0;
 
 const winningCombinations = [
     ['a1', 'a2', 'a3'],
@@ -36,35 +39,62 @@ const winningCombinations = [
 ]
 
 
-// check win
+// CHECKING FOR WINS
 const winCheck = function(player){
 
+    /*
+    Check the playersSpots array against all the winning combinations and return true if any of them are a match.
+    */
     if (winningCombinations.some(function(array){
         return array.every(function(index){
             return player.spots.includes(index)
         })
     })){
-        console.log('Win');
-        player.winCount ++
-        return true;
-    }}
+        
+        player.winCount ++ // increment the players win counter
 
-// check draw
-const drawCheck = function(){
-    if (boardState.length === 9){
-        drawCount ++
+
+        const array = boardState.splice(0); // splice out the board state array
+
+        array.unshift(p1Turn) // add whos turn it is //TODO: this is happening at the wrong time, need to happen at the start of the game not the end.
+
+        gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
+        
+         
+        
         return true;
     }
 }
 
+// CHECK FOR DRAW
+const drawCheck = function(){
+    if (boardState.length === 9){ // if the boardState array reaches length 9 and this function gets called it is a draw
+        drawCount ++ // increment the drawCount by 1
+        
+        const array = boardState.splice(0); // splice out the board state array
 
+        array.unshift(p1Turn) // add whos turn it is //TODO: this is happening at the wrong time, need to happen at the start of the game not the end.
+
+        gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
+        
+        return true;
+    }
+}
+
+// DOCUMENT READY FUCNTION
 $(function(){
 
+    //This probably needs a rename...  but its basically the function that runs each click.
     const handler = function(event){
-        console.log(boardState);
-        const boardSpotId = event.originalEvent.target.id; // for readability
         
-        const currentPlayer = p1Turn? player1 : player2;
+        const boardSpotId = event.originalEvent.target.id; // for readability
+
+        //TRYING TO STOP FAST CLICKING FROM PUSHING BAD DATA...
+        if (boardState.includes(boardSpotId)){ 
+            return;
+        }
+
+        const currentPlayer = p1Turn? player1 : player2; // set the current player base on whos turn it is
 
         // mark spot and remove clickability
         $(this).css('background', currentPlayer.icon).off('click');
@@ -72,17 +102,16 @@ $(function(){
         // push the spot into the game array
         boardState.push(boardSpotId);
 
-        //push the spot into the current players spots array
+        // push the spot into the current players spots array
         currentPlayer.spots.push(boardSpotId)
 
-        console.log(boardState);
-
-
+        
         if (winCheck(currentPlayer)){
-            console.log('run the win function');
+            //RUN THE WIN FUNCTION
             updatePage();
+
         } else if (drawCheck()){
-            console.log('run the draw function');
+            //RUN THE DRAW FUNCTION
             updatePage();
         } 
         
@@ -91,34 +120,53 @@ $(function(){
 
     $('.board-spot').on('click', handler);
 
-    
-
-    
     const updatePage = function(){
-        $('.board-spot').off('click');
+        $('.board-spot').off('click'); // turn off the click event on the board
 
-        // updatescores
+        // updatescores on page
         $('#player1-data .score').html(`${player1.winCount}`);
         $('#player2-data .score').html(`${player2.winCount}`);
         $('#draw-data .score').html(`${drawCount}`);
+        
 
         
     }
 
     const resetBoard = function(){
         // reset the board for next round
-        $('.board-spot').css('background', '');
-        $('.board-spot').on('click', handler);
-        player1.spots.length = 0;
+        $('.board-spot').css('background', ''); // remove images from divs
+        $('.board-spot').on('click', handler); // turn the clicks back on
+        $('#game-number').html(gameData.currentGame) // update the game counter
+
+        // reset the arrays storing moves played
+        player1.spots = []; 
         player2.spots = [];
-        boardState = [];
- 
-         
+        gameData.currentGame++
+
+        p1Turn = true; // back to player 1 to start //TODO: make this track who started last.
+    
+
     }
 
-    $('#update').on('click', resetBoard)
+    //TEMP RESET BOARD
+    $('#reset').on('click', resetBoard)
     
     // $('#player2-data img').attr('src', `/images/Red_X.svg`) // change players icon
+
+    // WELCOME PAGE ICON SELECTION
+    $('input[type=radio]').on('click',function(){
+        console.log($(this).siblings());
+        $('.icon').css('width', '100px')
+        $(this).siblings().css('width', '120px')
+    })
+
+    //SUBMIT BUTTON
+    $('#start-wrapper input[type=button]').on('click', function(){
+        const selectedIcon = $('input[name="icons"]:checked').siblings().attr('src')
+        const enteredName = $('input[type="text"]').val()
+        
+        console.log(selectedIcon, enteredName);
+    })
 
 })
 
