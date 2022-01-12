@@ -21,47 +21,7 @@
     // You can build in as many AI player rules as you like but you'll quickly end up with a longwinded list of if-else-if statements. To make a truly unbeatable AI opponent you'll need to look into implementing a recursive full-game-tree algorithm like MiniMax - for advanced/bold students only!
 
 
-    /*
-
-    minimax
-
-    if the game is over, return if it is a win (1) loss(-1) or draw(0) 
-
-    if the game is not over, play each available spot from the players perspective
-
-    available spots array
-
-    scores array
-
-    
-
-    if (player 1 turn is false){
-        maximise the score
-    } else {
-        minimise the score
-    }
-
-    
-
-    const best = function(availableSpots, whosturn){
-    
-        const availableSpots = all the available moves    
-
-        const scores = []
-
-        for availableSpot[i] {
-            check for a win
-
-            }
-        
-        if (the game is over){
-            return score
-            }    
-    }
-    
-    */
-
-
+   
 let largestNum = 0;
 
 const recursionArray = function(array, index){
@@ -103,89 +63,147 @@ const winTestArrow = function(playersMovesArray, winCombos){
     };
 };
 
+const p1test = ['a1']
+const p2test = ['c3']
+const fakeCurrentState = ['a1', 'c3']
+const dummyPossibleMoves = ['a2','a3', 'b1', 'b2', 'b3', 'c1', 'c2']
 
-// const p1test = ['a1']
-// const p2test = ['c3']
-// const fakeCurrentState = ['a1', 'c3']
-// const dummyPossibleMoves = ['a2','a3', 'b1', 'b2', 'b3', 'c1', 'c2']
+// const p1test = ['a1','a2','b2']
+// const p2test = ['c3','c2']
+// const fakeCurrentState = ['a1', 'c3', 'a2','c2','b2']
+// const dummyPossibleMoves = ['a3', 'b1', 'b3', 'c1' ]
 
-const p1test = ['a1','a2','b2']
-const p2test = ['c3','c2']
-const fakeCurrentState = ['a1', 'c3', 'a2','c2','b2']
-const dummyPossibleMoves = ['a3', 'b1', 'b3', 'c1' ]
+// const processMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
 
-const processMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
+//     let p1 = true;
+//     let counter = 1
+//     let score
 
-    let p1 = true;
-    let counter = 1
-    let score
+//     const recursion = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
 
-    const recursion = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
-
-        const curPlay = p1? 'player 1s turn' : 'player 2s turn';
+//         const curPlay = p1? 'player 1s turn' : 'player 2s turn';
         
-        const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
-        newPlayerArray.push(spot); // add on the proposed move
+//         const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
+//         newPlayerArray.push(spot); // add on the proposed move
         
-        const newCurrentBoard = currentBoard.slice(0); // copy the current board
-        newCurrentBoard.push(spot); // add on the proposed move
+//         const newCurrentBoard = currentBoard.slice(0); // copy the current board
+//         newCurrentBoard.push(spot); // add on the proposed move
 
-        const remainingPossibleMoves = possibleMove.slice(0); //make a copy of the remaining moves to play
-        remainingPossibleMoves.splice(possibleMove.indexOf(spot), 1); // take out the current move
+//         const remainingPossibleMoves = possibleMove.slice(0); //make a copy of the remaining moves to play
+//         remainingPossibleMoves.splice(possibleMove.indexOf(spot), 1); // take out the current move
 
-        console.log('possible moves:', possibleMove);
-        console.log(curPlay, ' and they played ',spot);
-        console.log('remaining possible moves', remainingPossibleMoves);
-        console.log('player array', newPlayerArray);
-        console.log('other player', otherPlayerArray);
+//         console.log('possible moves:', possibleMove);
+//         console.log(curPlay, ' and they played ',spot);
+//         console.log('remaining possible moves', remainingPossibleMoves);
+//         console.log('player array', newPlayerArray);
+//         console.log('other player', otherPlayerArray);
         
 
-        if (winTestArrow(newPlayerArray, winningCombinations)){
-            console.log(`its a win on ${p1} turn and it took ${counter} steps
+//         if (winTestArrow(newPlayerArray, winningCombinations)){
+//             console.log(`its a win on ${p1} turn and it took ${counter} steps
             
-            `);
-            score = `${p1} ${counter} steps`
-            return
-        };
+//             `);
+//             score = `${p1} ${counter} steps`
+//             return
+//         };
 
-        if (newCurrentBoard.length === 9){
-            console.log(`its a draw on ${p1} turn and it took ${counter} steps
+//         if (newCurrentBoard.length === 9){
+//             console.log(`its a draw on ${p1} turn and it took ${counter} steps
         
-            `);
+//             `);
             
-            score = 'draw'
-            return
-        };
+//             score = 'draw'
+//             return
+//         };
 
         
-        p1 = !p1
-        counter ++
-        console.log(`
+//         p1 = !p1
+//         counter ++
+//         console.log(`
         
-        `);
+//         `);
         
-        recursion(otherPlayerArray, newPlayerArray, remainingPossibleMoves, newCurrentBoard, spot)
-    };
+//         recursion(otherPlayerArray, newPlayerArray, remainingPossibleMoves, newCurrentBoard, spot)
+//     };
 
-    recursion(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
+//     recursion(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
 
-    return score
-};
+//     return score
+// };
 
-const result = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
+// const result = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
 
-    const scoreArray = []
+//     const scoreArray = []
        
-    possibleMove.forEach(function(spot, index){
+//     possibleMove.forEach(function(spot, index){
 
-        scoreArray[index] = processMove(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
+//         scoreArray[index] = processMove(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
 
+//     });
+
+
+//     console.log(scoreArray);
+
+// }
+
+// if the length of possible moves is 0 { return the score}
+    // else get the remaning possible moves
+    //create a score list
+
+        // for each of the remaning moves
+            // add the score returned
+
+
+const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
+    
+    if (possibleMoves.length === 0){ //BASE CASE
+        
+        if (winTestArrow(thisPlayerArray, winningCombinations)){
+        
+            return (aiTurn ? 10-counter : counter-10)
+        } else {
+            return 0
+        };
+    
+    };
+    
+    
+    const scoreList = [];
+
+    possibleMoves.forEach(function(move){
+        
+        const remainingPossibleMoves = possibleMoves.slice(0);// make a copy of the remaining moves to play
+        let moveIndex = possibleMoves.indexOf(move)
+        remainingPossibleMoves.splice(moveIndex, 1); // take out the current move'
+                    
+        const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
+        newPlayerArray.push(move); // add on the move
+
+        scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter++, !aiTurn);
+    })
+
+    
+    let largestScore = 0; 
+
+    scoreList.forEach((score) => { // loop the scorelist
+        if (score > largestScore){ // if the current score is greater then largestScore
+            largestScore = score;  // update largest score
+        }
     });
 
+    // console.log(scoreList);
 
-    console.log(scoreArray);
+    return largestScore;
+
+}            
+
     
-}
+
+
+
+        
+        
+
 
 
 
