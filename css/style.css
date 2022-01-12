@@ -75,6 +75,24 @@ body {
     font-size: 2em;
 }
 
+#game-mode-wrapper{
+    /* border: 1px solid red; */
+    display: flex;
+    gap: 30px;
+    font-size: 20pt;
+}
+
+#game-mode-wrapper div{
+    /* border: 1px solid red; */
+    opacity: 50%;
+    cursor: pointer;
+}
+
+#game-mode-wrapper div:hover{
+    opacity: 1;
+}
+
+
 #start-wrapper, #game-over-wrapper, #welcome-wrapper {
     /* background-color: blue; */
     width: var(--main-width);
@@ -124,6 +142,7 @@ body {
 
 .icon:hover {
     width: 100%;
+    cursor: pointer;
 }
 
 .icon-small{

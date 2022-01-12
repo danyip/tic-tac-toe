@@ -21,6 +21,51 @@
     // You can build in as many AI player rules as you like but you'll quickly end up with a longwinded list of if-else-if statements. To make a truly unbeatable AI opponent you'll need to look into implementing a recursive full-game-tree algorithm like MiniMax - for advanced/bold students only!
 
 
+    /*
+
+    minimax
+
+    if the game is over, return if it is a win (1) loss(-1) or draw(0) 
+
+    if the game is not over, play each available spot from the players perspective
+
+    available spots array
+
+    scores array
+
+    
+
+    if (player 1 turn is false){
+        maximise the score
+    } else {
+        minimise the score
+    }
+
+
+    const best = function(){
+    
+        const availableSpots = all the available moves
+
+        const scores = []
+
+            for each available spot {
+
+            }
+        
+            if (the game is over){
+            return score
+            }
+    
+    
+    }
+    
+
+
+    */
+
+
+
+
 
 //GLOBAL VARIABLES
 
@@ -60,10 +105,6 @@ let p1Turn = true; // Variable to store whos turn it is
 let player1Selected = false; // Has player 1 entered their name and chosen an icon
 let player2Selected = false; // Has player 2 entered their name and chosen an icon
 let singlePlayerGame = false; // Triggers a game against the AI
-
-
-
-
 
 
 // CHECKING FOR WINS
@@ -257,10 +298,8 @@ $(function(){
 
     // AI TAKES A TURN
     const aiMove = function(){
-        // choose a spot
         
-        
-        
+        //CHOOSE A SPOT
         const aiPick = aiLogic();
             
         //MARK THE SPOT AND FINISH THE TURN
@@ -296,7 +335,7 @@ $(function(){
     };
 
     // AI CHOOSES A SPOT - randomly...
-    const aiLogic = function(){
+    const aiLogicV1 = function(){
         //make an array of all board spots
         const gameBoard = []; 
         $('.board-spot').each(function(){
@@ -313,13 +352,36 @@ $(function(){
         // choose a random spot from the available spots
         const randomSpot = Math.floor(Math.random()*availableSpots.length);
         return availableSpots[randomSpot];
-     
 
-        
-   
     };
 
-    
+    const aiLogic = function(){
+        //make an array of all board spots
+        const gameBoard = []; 
+        $('.board-spot').each(function(){
+            gameBoard.push($(this).attr('id'))
+        });
+
+         
+        const availableSpots = gameBoard.slice(0);//make a copy of all board spots so i can
+        boardState.forEach(function(spot){ //loop the current board state
+            let i = availableSpots.indexOf(spot); //grab each taken spots array index in available spots
+            availableSpots.splice(i, 1) //remove them from the available spots
+        });
+
+        // always choose the middle square if its available
+        if(availableSpots.includes('b2')){
+            return 'b2'
+        };
+
+
+
+        // choose a random spot from the available spots
+        const randomSpot = Math.floor(Math.random()*availableSpots.length);
+        return availableSpots[randomSpot];
+        
+    };
+
     // MULTIPLAYER BUTTON
     $('#welcome-cover #multiplayer').on('click', function(){
         singlePlayerGame = false;
@@ -337,19 +399,16 @@ $(function(){
     // HOVER SPOT
     $('.board-spot').on('mouseover', function(){
 
-        
+        // check if the spot already has a child element to see if it has been played
         if ($(this).children().length === 1){
-            console.log('already filled');
-            return
+            return; //if it does then do nothing
         }
         
-        const icon = p1Turn? player1.icon : player2.icon;
+        const icon = p1Turn? player1.icon : player2.icon; // set the icon variable to the appropriate players icon
 
-        const $newImg = $('<img class="hover-icon">');
-        $newImg.attr('src', `${icon}`);
-        
-        $(this).append($newImg);
-
+        const $newImg = $('<img class="hover-icon">'); // make a new image in html
+        $newImg.attr('src', `${icon}`); // add the image based on whos turn it is
+        $(this).append($newImg); // attached the image
     })
 
     // REMOVE HOVER
