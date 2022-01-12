@@ -139,10 +139,10 @@ const winTestArrow = function(playersMovesArray, winCombos){
     };
 };
 
-const p1test = ['a1', 'a2', 'c1', 'c3']
-const p2test = ['b1', 'b2', 'c2']
-const fakeCurrentState = ['a1', 'b1', 'a2', 'b2', 'c1', 'c2', 'c3']
-const dummyPossibleMoves = ['a3', 'b3']
+const p1test = ['a1']
+const p2test = ['c3']
+const fakeCurrentState = ['a1', 'c3']
+const dummyPossibleMoves = ['a2','a3', 'b1', 'b2', 'b3', 'c1', 'c2']
 
 
 const checkSpaces = function(){ // takes an array of possible moves and returns the highest scoring move
@@ -168,72 +168,76 @@ const checkSpaces = function(){ // takes an array of possible moves and returns 
  
 };
 
-const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
 
-    let player1 = true;
 
-    possibleMove.forEach(function(spot){
-        // debugger
-        const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
-        newPlayerArray.push(spot); // add on the proposed move
-        
-        const newCurrentBoard = currentBoard.slice(0); // copy the current board
-        newCurrentBoard.push(spot); // add on the proposed move
 
-        console.log('possible moves:', possibleMove);
-        console.log('spot:' ,spot);
-        const remainingPossibleMoves = possibleMove.slice(0);
-        remainingPossibleMoves.splice(possibleMove.indexOf(spot), 1)
 
-        console.log('remaining possible moves', remainingPossibleMoves);
-        
 
-        if (winTestArrow(newPlayerArray, winningCombinations)){
-            console.log(`its a win on ${player1} turn
+
+const result = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
+
+    let p1 = true;
+    let counter = 0
+    const score = []
+
+    
+
+    const processMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
+        counter++
+
+        possibleMove.forEach(function(spot){
+            // debugger
+            const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
+            newPlayerArray.push(spot); // add on the proposed move
             
+            const newCurrentBoard = currentBoard.slice(0); // copy the current board
+            newCurrentBoard.push(spot); // add on the proposed move
+    
+            const remainingPossibleMoves = possibleMove.slice(0); //make a copy of the remaining moves to play
+            remainingPossibleMoves.splice(possibleMove.indexOf(spot), 1); // take out the current move
+    
             
+            console.log('possible moves:', possibleMove);
+            console.log('spot:' ,spot);
+            console.log('remaining possible moves', remainingPossibleMoves);
+            console.log('player array', newPlayerArray);
+            console.log('other player', otherPlayerArray);
+            
+    
+            if (winTestArrow(newPlayerArray, winningCombinations)){
+                console.log(`its a win on ${p1} turn and it took ${counter} steps
+                
+                `);
+                score[possibleMove.indexOf(spot)] = p1
+                return
+            };
+    
+            if (currentBoard.length === 9){
+                console.log(`its a draw on ${p1} turn and it took ${counter} steps
+            
+                `);
+                score[possibleMove.indexOf(spot)] = 'draw'
+                return
+            };
+    
+            console.log(`no result
+        
             `);
-            return
-        };
+    
+            p1 = !p1
+            processMove(otherPlayerArray, newPlayerArray, remainingPossibleMoves, newCurrentBoard)
+    
+        });
+     
+    }
 
-        if (currentBoard.length === 9){
-            console.log(`its a draw on ${player1} turn 
-            
-            
-            `);
-            return
-        };
+    processMove(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard)
 
-        console.log(`repeat
-        
-        
-        `);
-
-        player1 = !player1
-        bestMove(otherPlayerArray, newPlayerArray, possibleMove, newCurrentBoard)
-
-    });
-
-    // for (let i = 0; i < possibleMove.length; i++){
-    //     const newPlayerArray = p2Spots.slice(0); // make a copy of the players current array
-
-    //     newPlayerArray.push(possibleMove[i]) // add on the proposed move
-
-    //     console.log(newPlayerArray);
-
-    //     if (winTestArrow(newPlayerArray, winningCombinations)){
-    //         console.log('its a win');
-    //     }
-        
-    //     console.log('its not a win');
-
-        
-    // }
-
-
-
+    console.log(score);
 
 }
+
+
 
 
 
