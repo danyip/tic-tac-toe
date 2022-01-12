@@ -61,40 +61,6 @@
     
     */
 
-// RECURSION SIMPLE COUNT DOWN
-const recursionTest = function(number){ // function that takes a number and counts down 
-
-    console.log(number);    // log the number
-
-    const newNumber = number - 1   // modify the number in some way for the next round, 
-
-    if (newNumber > 0){ // if the base case is met
-        recursionTest(newNumber) // run the test again with the new number
-        // return // end the current function
-    }
-
-    console.log('the end'); // if the base case hasnt been met - do this
-}
-
-
-const recursionTest1 = function(number){ // function that takes a number and counts down 
-
-    console.log(number);    // log the number
-
-    const newNumber = number - 1   // modify the number in some way for the next round, 
-
-    if (number === 0){ // if the base case is met
-        console.log('the end');
-        return
-    }
-
-    recursionTest1(newNumber)
-}
-
-// RECURSION TEST ARRAY
-// print out items at each index of an array and return the largest number
-
-// const arr = [4,3,6,11,88,4,2]
 
 let largestNum = 0;
 
@@ -103,30 +69,28 @@ const recursionArray = function(array, index){
     if (index === array.length-1){ // base case - if we are at the end of the array
         console.log(largestNum); // log the largest number variable
         return  // exit the function
-    }
-    
+    };
     if (array[index] > largestNum){ // if the value at the current index is not 
         largestNum = array[index];
         console.log('after index:', index, 'the largest number is:' , largestNum);
-    }
+    };
 
-    recursionArray(array, index + 1)
+    recursionArray(array, index + 1);
 
 };
 
-//RECURSION TEST
-// take an array of possible moves and test if they are wins
 
 
-//check win function
-// const winTest = function(playersMovesArray, winCombos){
-//     if (winCombos.some(function(array){
-//         return array.every(function(index){ //if every index in a winning combination exists within the players array its a win
-//             return playersMovesArray.includes(index);
-//         })
-//     })){
-//          return true;
-//     };
+const winningCombinations = [
+    ['a1', 'a2', 'a3'],
+    ['b1', 'b2', 'b3'],
+    ['c1', 'c2', 'c3'],
+    ['a1', 'b1', 'c1'],
+    ['a2', 'b2', 'c2'],
+    ['a3', 'b3', 'c3'],
+    ['a1', 'b2', 'c3'],
+    ['a3', 'b2', 'c1'],
+]
 
 const winTestArrow = function(playersMovesArray, winCombos){
     
@@ -139,102 +103,88 @@ const winTestArrow = function(playersMovesArray, winCombos){
     };
 };
 
-const p1test = ['a1']
-const p2test = ['c3']
-const fakeCurrentState = ['a1', 'c3']
-const dummyPossibleMoves = ['a2','a3', 'b1', 'b2', 'b3', 'c1', 'c2']
 
+// const p1test = ['a1']
+// const p2test = ['c3']
+// const fakeCurrentState = ['a1', 'c3']
+// const dummyPossibleMoves = ['a2','a3', 'b1', 'b2', 'b3', 'c1', 'c2']
 
-const checkSpaces = function(){ // takes an array of possible moves and returns the highest scoring move
-    
-    const scores = []// to store a score for each possible move
-    let currentScore = 10;
+const p1test = ['a1','a2','b2']
+const p2test = ['c3','c2']
+const fakeCurrentState = ['a1', 'c3', 'a2','c2','b2']
+const dummyPossibleMoves = ['a3', 'b1', 'b3', 'c1' ]
 
+const processMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
 
-    const testSpots = function(dummyPossibleMoves){
+    let p1 = true;
+    let counter = 1
+    let score
 
-        const possibleMove = playersMovesArray.slice(0) // make a slice of the players current spots
+    const recursion = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
 
-        possibleMove.push(array[i]) // add in the spot to test
+        const curPlay = p1? 'player 1s turn' : 'player 2s turn';
+        
+        const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
+        newPlayerArray.push(spot); // add on the proposed move
+        
+        const newCurrentBoard = currentBoard.slice(0); // copy the current board
+        newCurrentBoard.push(spot); // add on the proposed move
 
-        if (winCheck(possibleMove, winningCombinations)){ //run the win check on the new array
-            scores[i] = currentScore;
-            return; 
+        const remainingPossibleMoves = possibleMove.slice(0); //make a copy of the remaining moves to play
+        remainingPossibleMoves.splice(possibleMove.indexOf(spot), 1); // take out the current move
+
+        console.log('possible moves:', possibleMove);
+        console.log(curPlay, ' and they played ',spot);
+        console.log('remaining possible moves', remainingPossibleMoves);
+        console.log('player array', newPlayerArray);
+        console.log('other player', otherPlayerArray);
+        
+
+        if (winTestArrow(newPlayerArray, winningCombinations)){
+            console.log(`its a win on ${p1} turn and it took ${counter} steps
+            
+            `);
+            score = `${p1} ${counter} steps`
+            return
         };
 
-        currentScore--
+        if (newCurrentBoard.length === 9){
+            console.log(`its a draw on ${p1} turn and it took ${counter} steps
+        
+            `);
+            
+            score = 'draw'
+            return
+        };
 
-    }; 
- 
+        
+        p1 = !p1
+        counter ++
+        console.log(`
+        
+        `);
+        
+        recursion(otherPlayerArray, newPlayerArray, remainingPossibleMoves, newCurrentBoard, spot)
+    };
+
+    recursion(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
+
+    return score
 };
-
-
-
-
-
-
 
 const result = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
 
-    let p1 = true;
-    let counter = 0
-    const score = []
+    const scoreArray = []
+       
+    possibleMove.forEach(function(spot, index){
 
-    
+        scoreArray[index] = processMove(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
 
-    const processMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
-        counter++
+    });
 
-        possibleMove.forEach(function(spot){
-            // debugger
-            const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
-            newPlayerArray.push(spot); // add on the proposed move
-            
-            const newCurrentBoard = currentBoard.slice(0); // copy the current board
-            newCurrentBoard.push(spot); // add on the proposed move
-    
-            const remainingPossibleMoves = possibleMove.slice(0); //make a copy of the remaining moves to play
-            remainingPossibleMoves.splice(possibleMove.indexOf(spot), 1); // take out the current move
-    
-            
-            console.log('possible moves:', possibleMove);
-            console.log('spot:' ,spot);
-            console.log('remaining possible moves', remainingPossibleMoves);
-            console.log('player array', newPlayerArray);
-            console.log('other player', otherPlayerArray);
-            
-    
-            if (winTestArrow(newPlayerArray, winningCombinations)){
-                console.log(`its a win on ${p1} turn and it took ${counter} steps
-                
-                `);
-                score[possibleMove.indexOf(spot)] = p1
-                return
-            };
-    
-            if (currentBoard.length === 9){
-                console.log(`its a draw on ${p1} turn and it took ${counter} steps
-            
-                `);
-                score[possibleMove.indexOf(spot)] = 'draw'
-                return
-            };
-    
-            console.log(`no result
-        
-            `);
-    
-            p1 = !p1
-            processMove(otherPlayerArray, newPlayerArray, remainingPossibleMoves, newCurrentBoard)
-    
-        });
-     
-    }
 
-    processMove(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard)
-
-    console.log(score);
-
+    console.log(scoreArray);
+    
 }
 
 
@@ -243,17 +193,6 @@ const result = function(thisPlayerArray, otherPlayerArray, possibleMove, current
 
 
 
-
-/*
-
-for each possible spot
-    check if it is a win > return 
-
-    if not a win return the new array and the board state and have another go
-
-
-
-*/
 
 
 
@@ -293,16 +232,7 @@ const gameData = {
     previous: {},
 }
 
-const winningCombinations = [
-    ['a1', 'a2', 'a3'],
-    ['b1', 'b2', 'b3'],
-    ['c1', 'c2', 'c3'],
-    ['a1', 'b1', 'c1'],
-    ['a2', 'b2', 'c2'],
-    ['a3', 'b3', 'c3'],
-    ['a1', 'b2', 'c3'],
-    ['a3', 'b2', 'c1'],
-]
+
 
 let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
 let drawCount = 0; // counting the draws
