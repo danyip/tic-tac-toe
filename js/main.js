@@ -1,4 +1,3 @@
-
 // TODO LIST
     //TODO: put some conditionals on the submit button to force a name and icon selection 
 
@@ -21,28 +20,70 @@
     // You can build in as many AI player rules as you like but you'll quickly end up with a longwinded list of if-else-if statements. To make a truly unbeatable AI opponent you'll need to look into implementing a recursive full-game-tree algorithm like MiniMax - for advanced/bold students only!
 
 
-   
-let largestNum = 0;
+const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
 
-const recursionArray = function(array, index){
+    
+    const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
+        
+        if (winTestArrow(thisPlayerArray, winningCombinations)){ // BASE CASE
 
-    if (index === array.length-1){ // base case - if we are at the end of the array
-        console.log(largestNum); // log the largest number variable
-        return  // exit the function
-    };
-    if (array[index] > largestNum){ // if the value at the current index is not 
-        largestNum = array[index];
-        console.log('after index:', index, 'the largest number is:' , largestNum);
-    };
+            return (aiTurn ? 10 + counter : counter - 10)
 
-    recursionArray(array, index + 1);
+        } else if (possibleMoves.length === 0){
 
-};
+            return 0
+        }
 
+        const scoreList = [];
 
+        possibleMoves.forEach(function(move){
+            
+            const remainingPossibleMoves = possibleMoves.slice(0);// make a copy of the remaining moves to play
+            let moveIndex = possibleMoves.indexOf(move)
+            remainingPossibleMoves.splice(moveIndex, 1); // take out the current move'
 
+            console.log(counter);
+                        
+            const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
+            newPlayerArray.push(move); // add on the move
+            scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
+            debugger
+            // console.log('scorelist', scoreList);
+        })
+        
+        let largestScore = 0; 
+        let largestScoreIndex = 0;
 
+        scoreList.forEach((score, index) => { // loop the scorelist
+            if (score > largestScore){ // if the current score is greater then largestScore
+                largestScore = score;
+                largestScoreIndex = index;  // update largest score
+                if (counter === 0){
+                    console.log('largestScore', largestScore)
+                    console.log('largestScoreIndex',largestScoreIndex)
+                }
+            }
+        });
+       
+        if (counter === 0){
+            console.log('scorelist in counter check', scoreList); 
+            console.log('possible moves in counter check', possibleMoves);
+            return largestScoreIndex
+        } else {
+            return largestScore;
+        }
 
+    }
+        
+    const result = minimax(thisPlayerArray, otherPlayerArray, possibleMoves, 0, false);
+
+    console.log('result', result);
+    
+    console.log(possibleMoves[result]);
+    
+    return possibleMoves[result];
+
+}  
 
 const winTestArrow = function(playersMovesArray, winCombos){
     
@@ -55,158 +96,7 @@ const winTestArrow = function(playersMovesArray, winCombos){
     };
 };
 
-// const p1test = ['a1']
-// const p2test = ['c3']
-// const fakeCurrentState = ['a1', 'c3']
-// const dummyPossibleMoves = ['a2', 'a3', 'b1', 'b2', 'b3', 'c1', 'c2']
-
-const p1test = ['a1','a2','b2']
-const p2test = ['c3','c2']
-const fakeCurrentState = ['a1', 'c3', 'a2','c2','b2']
-const dummyPossibleMoves = ['a3', 'b1', 'b3', 'c1' ]
-
-// const processMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
-
-//     let p1 = true;
-//     let counter = 1
-//     let score
-
-//     const recursion = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
-
-//         const curPlay = p1? 'player 1s turn' : 'player 2s turn';
-        
-//         const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
-//         newPlayerArray.push(spot); // add on the proposed move
-        
-//         const newCurrentBoard = currentBoard.slice(0); // copy the current board
-//         newCurrentBoard.push(spot); // add on the proposed move
-
-//         const remainingPossibleMoves = possibleMove.slice(0); //make a copy of the remaining moves to play
-//         remainingPossibleMoves.splice(possibleMove.indexOf(spot), 1); // take out the current move
-
-//         console.log('possible moves:', possibleMove);
-//         console.log(curPlay, ' and they played ',spot);
-//         console.log('remaining possible moves', remainingPossibleMoves);
-//         console.log('player array', newPlayerArray);
-//         console.log('other player', otherPlayerArray);
-        
-
-//         if (winTestArrow(newPlayerArray, winningCombinations)){
-//             console.log(`its a win on ${p1} turn and it took ${counter} steps
-            
-//             `);
-//             score = `${p1} ${counter} steps`
-//             return
-//         };
-
-//         if (newCurrentBoard.length === 9){
-//             console.log(`its a draw on ${p1} turn and it took ${counter} steps
-        
-//             `);
-            
-//             score = 'draw'
-//             return
-//         };
-
-        
-//         p1 = !p1
-//         counter ++
-//         console.log(`
-        
-//         `);
-        
-//         recursion(otherPlayerArray, newPlayerArray, remainingPossibleMoves, newCurrentBoard, spot)
-//     };
-
-//     recursion(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
-
-//     return score
-// };
-
-// const result = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard){
-
-//     const scoreArray = []
-       
-//     possibleMove.forEach(function(spot, index){
-
-//         scoreArray[index] = processMove(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot);
-
-//     });
-
-
-//     console.log(scoreArray);
-
-// }
-
-// if the length of possible moves is 0 { return the score}
-    // else get the remaning possible moves
-    //create a score list
-
-        // for each of the remaning moves
-            // add the score returned
-
-
-
-
-
-const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
-    
-    if (possibleMoves.length === 0){ //BASE CASE
-        
-        if (winTestArrow(thisPlayerArray, winningCombinations)){
-        
-            return (aiTurn ? 10-counter : counter-10)
-        } else {
-            return 0
-        };
-    };
-    
-    const scoreList = []
-    const moveList = []
-    
-
-    possibleMoves.forEach(function(move){
-        
-        const remainingPossibleMoves = possibleMoves.slice(0);// make a copy of the remaining moves to play
-        let moveIndex = possibleMoves.indexOf(move)
-        remainingPossibleMoves.splice(moveIndex, 1); // take out the current move'
-                    
-        const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
-        newPlayerArray.push(move); // add on the move
-        
-        moveList[moveIndex] = move
-        scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter++, !aiTurn);
-    })
-
-    
-    let largestScore = 0; 
-
-    scoreList.forEach((score) => { // loop the scorelist
-        if (score > largestScore){ // if the current score is greater then largestScore
-            largestScore = score;  // update largest score
-        }
-    });
-
-    moveToPlay = scoreList.indexOf(largestScore)
-    
-    console.log(scoreList);
-    console.log(moveList);
-
-
-    return largestScore;
-
-}
-
-const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
-
-    const scoreList = [];
-  
-    return scoreList.indexOf(minimax(thisPlayerArray, otherPlayerArray, possibleMoves))
-
-}
-
-
-//GLOBAL VARIABLES
+// GLOBAL VARIABLES
 
 
 const player1 = {
@@ -260,7 +150,6 @@ const winCheck = function(player){
     })){
         
         player.winCount ++ // increment the players win counter
-
 
         const array = boardState.splice(0); // splice out the board state array
 
@@ -324,6 +213,7 @@ $(function(){
         } else if (drawCheck()){
             updatePage();
             $("#game-over-cover p").html(`It's a draw!`);
+            $("#game-over-cover img").attr('src', ``);
             $("#game-over-cover").css('display', 'flex');
             return;
         } 
@@ -378,6 +268,11 @@ $(function(){
         const enteredName = $('input[type="text"]').val();
         const selectedIcon = $('input[name="icons"]:checked').siblings().attr('src');
 
+        if (enteredName.length === 0 || selectedIcon === undefined){
+            console.log('no name');
+            return
+        }
+
         if (!player1Selected){
             player1.name = enteredName; //set the name in the players object
             player1.icon = selectedIcon; //set the icon in ple players object
@@ -396,8 +291,8 @@ $(function(){
                 player2.name = 'Beep Bop Computer'; //set the name in the players object
                 player2.icon = 'images/icons/robot.svg'; //set the icon in ple players object
 
-                $('#player2-data .player-name').html('Beep Bop Computer') // change players name
-                $('#player2-data img').attr('src', 'images/icons/robot.svg') // change players icon
+                $('#player2-data .player-name').html(player2.name) // change players name
+                $('#player2-data img').attr('src', player2.icon) // change players icon
 
                  player2Selected = true;
 
@@ -407,7 +302,6 @@ $(function(){
                 $('.board-spot').on('click', handler); // turn on the board
             }
 
-             
             $('.icon').removeClass('icon-big'); // reset icon states for player 2
             $('.icon').removeClass('icon-small'); // reset icon states for player 2
             $('#start-screen-cover h1').html('Hello Player 2') //change the message to player 2
@@ -439,7 +333,7 @@ $(function(){
     const aiMove = function(){
         
         //CHOOSE A SPOT
-        const aiPick = aiLogic();
+        const aiPick = aiLogicV3();
             
         //MARK THE SPOT AND FINISH THE TURN
         const $newImg = $('<img class="placed-icon">'); //make a new img
@@ -448,8 +342,6 @@ $(function(){
         // setTimeout(function(){
             $(`#${aiPick}`).append($newImg);//append it to the div
         // }, 1000)
-
-         
 
         boardState.push(aiPick); // push the spot into the game array
         player2.spots.push(aiPick); // push the spot into the current players spots array
@@ -469,8 +361,7 @@ $(function(){
             } 
 
             p1Turn = !p1Turn;
-            
-            
+                    
     };
 
     // AI CHOOSES A SPOT - randomly...
@@ -493,8 +384,8 @@ $(function(){
         return availableSpots[randomSpot];
 
     };
-
-    const aiLogic = function(){
+    // AI MIDDLE FIRST THEN RANDOM
+    const aiLogicV2 = function(){
         //make an array of all board spots
         const gameBoard = []; 
         $('.board-spot').each(function(){
@@ -518,6 +409,24 @@ $(function(){
         // choose a random spot from the available spots
         const randomSpot = Math.floor(Math.random()*availableSpots.length);
         return availableSpots[randomSpot];
+        
+    };
+    // LINKED TO MINIMAX
+    const aiLogicV3 = function(){
+        //make an array of all board spots
+        const gameBoard = []; 
+        $('.board-spot').each(function(){
+            gameBoard.push($(this).attr('id'))
+        });
+
+        const availableSpots = gameBoard.slice(0);//make a copy of all board spots so i can
+        boardState.forEach(function(spot){ //loop the current board state
+            let i = availableSpots.indexOf(spot); //grab each taken spots array index in available spots
+            availableSpots.splice(i, 1) //remove them from the available spots
+        });
+
+        
+        return bestMove(player2.spots, player1.spots, availableSpots)       
         
     };
 
