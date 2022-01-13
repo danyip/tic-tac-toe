@@ -54,8 +54,8 @@ body {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    /* display: flex; */
-    display: none;
+    display: flex;
+    /* display: none; */
     align-items: center;
     justify-content: center;
     z-index: 1;
@@ -72,26 +72,45 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 1;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 #game-mode-wrapper{
     /* border: 1px solid red; */
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 30px;
     font-size: 20pt;
 }
 
+@media screen and (max-width: 450px) {
+    #game-mode-wrapper{
+        flex-direction: column;
+    }
+    
+}
+
 #game-mode-wrapper div{
     /* border: 1px solid red; */
-    opacity: 50%;
+    /* opacity: 50%; */
     cursor: pointer;
+    transition: 200ms;
+    padding: 5px;
 }
 
-#game-mode-wrapper div:hover{
-    opacity: 1;
+.game-mode-button{
+    width: fit-content
 }
 
+
+#welcome-wrapper h1, #start-wrapper h1{
+    margin: 0;
+}
+
+#welcome-wrapper div{
+    margin: 0;
+}
 
 #start-wrapper, #game-over-wrapper, #welcome-wrapper {
     /* background-color: blue; */
@@ -104,15 +123,58 @@ body {
     text-align: center;
 }
 
+
+
+#game-over-wrapper h1, #game-over-wrapper p{
+
+    margin: 10px 0
+}
+
+@media screen and (max-height: 650px) {
+   #game-over-wrapper{
+        flex-direction: row; 
+
+    }
+}
+
+
+
+.input-req-box-shadow {
+    outline: none;
+    box-shadow: inset 0px 0px 20px rgb(255, 0, 0);
+}
+
 #icon-grid{
     /* background: red; */
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 10px;
     margin: 20px 0;
+    border-radius: 30px;
+    transition: 200ms;
+    /* border: 1px solid red */
 }
 
-@media screen and (max-width: 800px) {
+.btn{
+    font-family: 'Balsamiq Sans', cursive;
+    font-size: 1.7rem;
+    border-radius: 10px;
+    border: 4px solid rgb(53, 53, 53);
+    outline: none;
+    opacity: 60%;
+    transition: 200ms;
+}
+
+.btn:hover{
+    opacity: 1;
+    font-size: 1.8rem;
+}
+
+.btn:active{
+    font-size: 1.7rem;
+}
+
+@media screen and (max-width: 700px) {
     #icon-grid {
         grid-template-columns: 1fr 1fr 1fr;
     }
@@ -127,10 +189,27 @@ body {
     justify-content: center;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 600px) {
     .icon-wrapper {
         width: 80px;
         height: 80px;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    .icon-wrapper {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media screen and (max-height: 400px) {
+    .icon-wrapper {
+        width: 60px;
+        height: 60px;
+    }
+    #start-wrapper {
+        font-size: 0.8em;
     }
 }
 
@@ -164,6 +243,14 @@ main {
     flex-direction: column;
 }
 
+@media screen and (max-height: 680px) {
+    main {
+        flex-direction: row;
+
+    }
+    
+}
+
 #board-heading{
     text-align: center;
 }
@@ -189,6 +276,14 @@ main {
     justify-content: center;
 }
 
+@media screen and (max-width: 580px) {
+    .board-spot{
+        width: 92px;
+        height: 92px;
+    }
+    
+}
+
 .board-spot::after {
     content: '';
     width: calc(var(--main-width)*0.2);
@@ -196,8 +291,12 @@ main {
     position: absolute;
 }
 
-.hover-icon, .placed-icon, .winner-icon {
+.hover-icon, .placed-icon {
     width: 80%
+}
+
+.winner-icon {
+    height: 300px
 }
 
 .hover-icon {
@@ -209,16 +308,21 @@ main {
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 3fr 1fr;
     grid-template-areas: 
     "playerx playero"
     "draw draw";
-    gap: 50px;
+    gap: 20px;
     text-align: center;
+    align-items: end;
+    
 }
+
+
 
 #player1-data {
     grid-area: playerx;
+    
 }
 
 #player2-data {
@@ -227,10 +331,12 @@ main {
 
 #draw-data {
     grid-area: draw;
+    align-self: start;
 }
 
+
 .player-name{
-    margin: 0;
+    margin: 10px 0;
 }
 
 .player-wrapper img{
@@ -239,6 +345,18 @@ main {
     margin: 0 auto;
 }
 
+@media screen and (max-width: 450px) {
+    .player-wrapper img{
+        width: 60px
+    }
+    
+}
+
+.player-wrapper span{
+    display: inline-block;
+    margin: 10px
+}
+
 #player1-data {
     grid-area: playerx;
 }
@@ -251,5 +369,18 @@ main {
     grid-area: draw;
 }
 
+#name-field {
+    font-family: 'Balsamiq Sans', cursive;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    border: 4px solid rgb(53, 53, 53);
+    outline: none;
+    transition: 200ms;
+}
+
+#name-field:focus {
+    outline: none;
+    box-shadow: 0px 0px 10px green  ;
+}
 
 

@@ -17,11 +17,11 @@
     <div id="welcome-cover" class="cover">
         <div id="welcome-wrapper">
             <h1>Hello :)</h1>
-            <p>Please select a game type:</p>
+            <p>Please select a game type</p>
             
             <div id="game-mode-wrapper">
-                <div id="single-player" class="game-mode-button">Single-Player</div>
-                <div id="multiplayer" class="game-mode-button">Multiplayer</div>
+                <div id="single-player" class="game-mode-button btn">Single-Player</div>
+                <div id="multiplayer" class="game-mode-button btn">Multiplayer</div>
             </div>
             
         </div>
@@ -32,7 +32,7 @@
         <form id="start-wrapper">
             <h1>Hello Player 1 </h1>
             <p>Please enter your name and choose an icon</p>
-            <input type="text" placeholder="Enter your name">
+            <input id="name-field" type="text" placeholder="Enter your name">
             <div id="icon-grid">
                 
                 <label class="icon-wrapper">
@@ -177,7 +177,7 @@
                     >
                 </label> 
             </div>
-            <input type="button" value="Submit">
+            <input class="btn" type="button" value="Submit">
         </form>
     </div>
 
@@ -186,11 +186,10 @@
             <h1>Game Over </h1>
             <img class="winner-icon"src="" alt="">
             <p>asjdkhk</p>
-            <input type="button" value="rematch">
+            <input class="btn" type="button" value="rematch">
         </div>
     </div>
 
-    <!-- <h1 id="board-heading"> tic-tac-toe</h1> -->
     <main>
         <div id="game-board">
             <div id="a1" class="board-spot"></div>
@@ -210,7 +209,7 @@
                 <img src="" alt="player icon">
                 <div>
                     <span class="score-title">Score</span>
-                    <span class="score">0</span>
+                    <span class="score:">0</span>
                 </div>
             </section>
 

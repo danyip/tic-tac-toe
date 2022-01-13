@@ -1,90 +1,77 @@
-// TODO LIST
-    //TODO: put some conditionals on the submit button to force a name and icon selection 
-
-    //TODO: clear the player name field before player 2
-
-    //TODO: style the text box and submit/rematch buttons
-
-    //TODO: add a min width media query to the game board
-
-    // Use LocalStorage to persist data locally to allow games to continue after page refresh or loss of internet connectivity
-
-    // Support custom board sizes: default is 3x3 but you could allow users to choose a larger board
-
-    // Support networked multiplayer: https://www.firebase.com/ has a nice quickstart guide
-
-    // Create an AI opponent: teach Javascript to play an unbeatable game against you
-
-    // Start by implementing a few simple rules which can be easily checked and are always good moves, such as "always take the center square if it's available" - you can google these rules for yourself
-
-    // You can build in as many AI player rules as you like but you'll quickly end up with a longwinded list of if-else-if statements. To make a truly unbeatable AI opponent you'll need to look into implementing a recursive full-game-tree algorithm like MiniMax - for advanced/bold students only!
-
-
+// TODO: Make this actually take the best move....
 const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
 
-    
     const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
         
-        if (winTestArrow(thisPlayerArray, winningCombinations)){ // BASE CASE
+        // CHECK FOR BASE CASE (recursion end state)
+        if (winTestArrow(thisPlayerArray, winningCombinations)){ // if the current players spots contain a win
 
-            return (aiTurn ? 10 + counter : counter - 10)
+            return (aiTurn ? 10 - counter : counter - 10)   // if its the AI's turn return SCORE: (10 - depth)
+                                                            // if its not the AI's turn return SCORE: (depth - 10)
 
-        } else if (possibleMoves.length === 0){
-
+        } else if (possibleMoves.length === 0){             // else if there is no more moves left to play return SCORE: (0)
             return 0
-        }
+        };
 
-        const scoreList = [];
+        const scoreList = []; // create a scorelist to store results of the below for each
 
         possibleMoves.forEach(function(move){
             
-            const remainingPossibleMoves = possibleMoves.slice(0);// make a copy of the remaining moves to play
-            let moveIndex = possibleMoves.indexOf(move)
-            remainingPossibleMoves.splice(moveIndex, 1); // take out the current move'
+            const remainingPossibleMoves = possibleMoves.slice(0); // make a copy of the remaining moves to play
+            let moveIndex = possibleMoves.indexOf(move) // grab the index of the current move
+            remainingPossibleMoves.splice(moveIndex, 1); // take the current move out of the remaining moves
 
-            console.log(counter);
+            // console.log(counter);
                         
             const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
             newPlayerArray.push(move); // add on the move
+            
+            // call minimax on the new board state and push the results into the scoreList at the matching index
+                                    // switch turns by passing the other player first             increment depth  flip the turn
             scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
-            debugger
+    
             // console.log('scorelist', scoreList);
         })
         
+        // process the scorelist to find the largest score
         let largestScore = 0; 
+
         let largestScoreIndex = 0;
 
         scoreList.forEach((score, index) => { // loop the scorelist
-            if (score > largestScore){ // if the current score is greater then largestScore
-                largestScore = score;
-                largestScoreIndex = index;  // update largest score
-                if (counter === 0){
-                    console.log('largestScore', largestScore)
-                    console.log('largestScoreIndex',largestScoreIndex)
-                }
+            if (Math.abs(score) > largestScore){ // if the absolute value of the current score is greater then largestScore
+                largestScore = score;  // update largest score
+                largestScoreIndex = index;  // update the index to match
+                
+                // if (counter === 0){
+                //     console.log('largestScore', largestScore)
+                //     console.log('largestScoreIndex',largestScoreIndex)
+                // }
             }
-        });
+        })
+        
        
-        if (counter === 0){
+        if (counter === 0){ // for the first call return the INDEX of the largest score, for each recursive call return the largest score.
             console.log('scorelist in counter check', scoreList); 
             console.log('possible moves in counter check', possibleMoves);
             return largestScoreIndex
         } else {
             return largestScore;
-        }
-
-    }
+        };
         
+    }
+    
+    // initalize minimax with the current game state. result will be the index of the largest score. 
     const result = minimax(thisPlayerArray, otherPlayerArray, possibleMoves, 0, false);
 
     console.log('result', result);
     
     console.log(possibleMoves[result]);
     
-    return possibleMoves[result];
+    return possibleMoves[result]; //return the id of the board position that aligns to the highest scoring move.
 
 }  
-
+// WIN CHECK FOR MINIMAX
 const winTestArrow = function(playersMovesArray, winCombos){
     
     if (winCombos.some(combo => {
@@ -97,27 +84,22 @@ const winTestArrow = function(playersMovesArray, winCombos){
 };
 
 // GLOBAL VARIABLES
-
-
 const player1 = {
     name: '',
     spots: [],
     winCount: 0,
     icon: ''
 }
-
 const player2 = {
     name: '',
     spots: [],
     winCount: 0,
     icon: ''
 }
-
 const gameData = {
     currentGame: 1,
     previous: {},
 }
-
 const winningCombinations = [
     ['a1', 'a2', 'a3'],
     ['b1', 'b2', 'b3'],
@@ -128,7 +110,6 @@ const winningCombinations = [
     ['a1', 'b2', 'c3'],
     ['a3', 'b2', 'c1'],
 ]
-
 let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
 let drawCount = 0; // counting the draws
 let p1Turn = true; // Variable to store whos turn it is
@@ -140,9 +121,8 @@ let singlePlayerGame = false; // Triggers a game against the AI
 // CHECKING FOR WINS
 const winCheck = function(player){
 
-    /*
-    Check the playersSpots array against all the winning combinations and return true if any of them are a match.
-    */
+
+    // Check the playersSpots array against all the winning combinations and return true if any of them are a match.
     if (winningCombinations.some(function(array){
         return array.every(function(index){
             return player.spots.includes(index)
@@ -150,13 +130,9 @@ const winCheck = function(player){
     })){
         
         player.winCount ++ // increment the players win counter
-
         const array = boardState.splice(0); // splice out the board state array
-
         array.unshift(p1Turn) // add whos turn it is //TODO: this is happening at the wrong time, need to happen at the start of the game not the end.
-
         gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
-        
         return true;
     }
 }
@@ -253,7 +229,9 @@ $(function(){
 
     // WELCOME PAGE ICON SELECTION 
     $('input[type=radio]').on('click',function(){
-        
+
+        $('#icon-grid').removeClass('input-req-box-shadow')
+
         $('.icon').removeClass('icon-big');
         $('.icon').addClass('icon-small');
 
@@ -265,13 +243,23 @@ $(function(){
     //SUBMIT BUTTON ############## GAME STARTS HERE ##################
     $('#start-wrapper input[type=button]').on('click', function(){
 
-        const enteredName = $('input[type="text"]').val();
+        const enteredName = $('#name-field').val();
         const selectedIcon = $('input[name="icons"]:checked').siblings().attr('src');
 
-        if (enteredName.length === 0 || selectedIcon === undefined){
-            console.log('no name');
+        if (enteredName.length === 0 && selectedIcon === undefined){
+            $('#name-field').addClass('input-req-box-shadow');
+            $('#icon-grid').addClass('input-req-box-shadow');
+            return
+        } else if (selectedIcon === undefined){
+            $('#icon-grid').addClass('input-req-box-shadow');
+            return
+        } else if (enteredName.length === 0){
+            $('#name-field').addClass('input-req-box-shadow');
             return
         }
+
+
+
 
         if (!player1Selected){
             player1.name = enteredName; //set the name in the players object
@@ -305,6 +293,7 @@ $(function(){
             $('.icon').removeClass('icon-big'); // reset icon states for player 2
             $('.icon').removeClass('icon-small'); // reset icon states for player 2
             $('#start-screen-cover h1').html('Hello Player 2') //change the message to player 2
+            $('#name-field').val('')
 
         } else {
             player2.name = enteredName; //set the name in the players object
@@ -463,7 +452,13 @@ $(function(){
     $('.board-spot').on('mouseout', function(){
         $('.hover-icon').remove();
     })
-       
+    
+    // REMOVE INPUT BOX SHADOW
+    $('#name-field').focus(function(){
+        $(this).removeClass('input-req-box-shadow')
+    })
+
+    $('#start-screen-cover').hide()
   
 })
 
