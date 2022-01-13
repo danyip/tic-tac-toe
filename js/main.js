@@ -1,76 +1,79 @@
 // TODO: Make this actually take the best move....
 const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
 
+    
     const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
         
-        // CHECK FOR BASE CASE (recursion end state)
-        if (winCheck(thisPlayerArray)){ // if the current players spots contain a win
+        if (winTestArrow(thisPlayerArray, winningCombinations)){ // BASE CASE
 
-            return (aiTurn ? 10 - counter : counter - 10)   // if its the AI's turn return SCORE: (10 - depth)
-                                                            // if its not the AI's turn return SCORE: (depth - 10)
+            return (aiTurn ? 10 + counter : counter - 10)
 
-        } else if (possibleMoves.length === 0){             // else if there is no more moves left to play return SCORE: (0)
+        } else if (possibleMoves.length === 0){
+
             return 0
-        };
+        }
 
-        const scoreList = []; // create a scorelist to store results of the below for each
+        const scoreList = [];
 
         possibleMoves.forEach(function(move){
             
-            const remainingPossibleMoves = possibleMoves.slice(0); // make a copy of the remaining moves to play
-            let moveIndex = possibleMoves.indexOf(move) // grab the index of the current move
-            remainingPossibleMoves.splice(moveIndex, 1); // take the current move out of the remaining moves
+            const remainingPossibleMoves = possibleMoves.slice(0);// make a copy of the remaining moves to play
+            let moveIndex = possibleMoves.indexOf(move)
+            remainingPossibleMoves.splice(moveIndex, 1); // take out the current move'
 
             // console.log(counter);
                         
             const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
             newPlayerArray.push(move); // add on the move
-            
-            // call minimax on the new board state and push the results into the scoreList at the matching index
-                                    // switch turns by passing the other player first             increment depth  flip the turn
             scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
-    
+            
             // console.log('scorelist', scoreList);
         })
         
-        // process the scorelist to find the largest score
         let largestScore = 0; 
-
         let largestScoreIndex = 0;
 
         scoreList.forEach((score, index) => { // loop the scorelist
-            if (Math.abs(score) > largestScore){ // if the absolute value of the current score is greater then largestScore
-                largestScore = score;  // update largest score
-                largestScoreIndex = index;  // update the index to match
-                
-                // if (counter === 0){
-                //     console.log('largestScore', largestScore)
-                //     console.log('largestScoreIndex',largestScoreIndex)
-                // }
+            if (score > largestScore){ // if the current score is greater then largestScore
+                largestScore = score;
+                largestScoreIndex = index;  // update largest score
+                if (counter === 0){
+                    console.log('largestScore', largestScore)
+                    console.log('largestScoreIndex',largestScoreIndex)
+                }
             }
-        })
-        
+        });
        
-        if (counter === 0){ // for the first call return the INDEX of the largest score, for each recursive call return the largest score.
+        if (counter === 0){
             console.log('scorelist in counter check', scoreList); 
             console.log('possible moves in counter check', possibleMoves);
             return largestScoreIndex
         } else {
             return largestScore;
-        };
-        
+        }
+
     }
-    
-    // initalize minimax with the current game state. result will be the index of the largest score. 
+        
     const result = minimax(thisPlayerArray, otherPlayerArray, possibleMoves, 0, false);
 
     console.log('result', result);
     
     console.log(possibleMoves[result]);
     
-    return possibleMoves[result]; //return the id of the board position that aligns to the highest scoring move.
+    return possibleMoves[result];
 
 }  
+
+const winTestArrow = function(playersMovesArray, winCombos){
+    
+    if (winCombos.some(combo => {
+        return combo.every(index => {
+            return playersMovesArray.includes(index);
+        });
+    })) {
+        return true;                    
+    };
+};
 // GLOBAL VARIABLES
 const player1 = {
     name: '',
@@ -83,6 +86,11 @@ const player2 = {
     spots: [],
     winCount: 0,
     icon: ''
+}
+
+const gameData = {
+    currentGame: 1,
+    previous: {},
 }
 
 const winningCombinations = [
@@ -105,21 +113,49 @@ let singlePlayerGame = false; // Triggers a game against the AI
 
 
 // CHECKING FOR WINS
+
 const winCheck = function(player){
 
-    // Check the playersSpots array against all the winning combinations and return true if any of them are a match.
-    
-    return ( winningCombinations.some(function(array){
+    /*
+    Check the playersSpots array against all the winning combinations and return true if any of them are a match.
+    */
+    if (winningCombinations.some(function(array){
         return array.every(function(index){
             return player.spots.includes(index)
         })
-    }))
+    })){
+        
+        player.winCount ++ // increment the players win counter
+
+        const array = boardState.splice(0); // splice out the board state array
+
+        array.unshift(p1Turn) // add whos turn it is //TODO: this is happening at the wrong time, need to happen at the start of the game not the end.
+
+        gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
+        
+        return true;
+    }
 }
 
 // CHECK FOR DRAW
+
 const drawCheck = function(){
-    return (boardState.length === 9)
+    if (boardState.length === 9){ // if the boardState array reaches length 9 and this function gets called it is a draw
+        
+        console.log('draw');
+        drawCount++; // increment the drawCount by 1
+        
+        const array = boardState.splice(0); // splice out the board state array
+
+        array.unshift(p1Turn); // add whos turn it is //TODO: this is happening at the wrong time, need to happen at the start of the game not the end.
+
+        gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
+        
+        return true;
+    }
 }
+
+
 
 // DOCUMENT READY FUCNTION
 $(function(){
@@ -147,24 +183,15 @@ $(function(){
         boardState.push(boardSpotId); // push the spot into the game array
         currentPlayer.spots.push(boardSpotId) // push the spot into the current players spots array
 
-        if (winCheck(currentPlayer)){ // check for a win
-            currentPlayer.winCount ++ // increment the players win counter
-
-            updatePage(); 
-
-            // style and show the game over screen
+        if (winCheck(currentPlayer)){
+            updatePage();
             $("#game-over-cover p").html(`${currentPlayer.name} is the winner!`);
             $("#game-over-cover img").attr('src', `${currentPlayer.icon}`);
             $("#game-over-cover").css('display', 'flex');
+            return;
 
-            return; // exit the function
-
-        } else if (drawCheck()){ // check for a draw
-            drawCount++; // increment the drawCount by 1
-
+        } else if (drawCheck()){
             updatePage();
-
-            // style and show the game over screen
             $("#game-over-cover p").html(`It's a draw!`);
             $("#game-over-cover img").attr('src', ``);
             $("#game-over-cover").css('display', 'flex');
