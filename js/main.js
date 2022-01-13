@@ -41,16 +41,8 @@ const recursionArray = function(array, index){
 
 
 
-const winningCombinations = [
-    ['a1', 'a2', 'a3'],
-    ['b1', 'b2', 'b3'],
-    ['c1', 'c2', 'c3'],
-    ['a1', 'b1', 'c1'],
-    ['a2', 'b2', 'c2'],
-    ['a3', 'b3', 'c3'],
-    ['a1', 'b2', 'c3'],
-    ['a3', 'b2', 'c1'],
-]
+
+
 
 const winTestArrow = function(playersMovesArray, winCombos){
     
@@ -59,19 +51,19 @@ const winTestArrow = function(playersMovesArray, winCombos){
             return playersMovesArray.includes(index);
         });
     })) {
-        return true;
+        return true;                    
     };
 };
 
-const p1test = ['a1']
-const p2test = ['c3']
-const fakeCurrentState = ['a1', 'c3']
-const dummyPossibleMoves = ['a2','a3', 'b1', 'b2', 'b3', 'c1', 'c2']
+// const p1test = ['a1']
+// const p2test = ['c3']
+// const fakeCurrentState = ['a1', 'c3']
+// const dummyPossibleMoves = ['a2', 'a3', 'b1', 'b2', 'b3', 'c1', 'c2']
 
-// const p1test = ['a1','a2','b2']
-// const p2test = ['c3','c2']
-// const fakeCurrentState = ['a1', 'c3', 'a2','c2','b2']
-// const dummyPossibleMoves = ['a3', 'b1', 'b3', 'c1' ]
+const p1test = ['a1','a2','b2']
+const p2test = ['c3','c2']
+const fakeCurrentState = ['a1', 'c3', 'a2','c2','b2']
+const dummyPossibleMoves = ['a3', 'b1', 'b3', 'c1' ]
 
 // const processMove = function(thisPlayerArray, otherPlayerArray, possibleMove, currentBoard, spot){
 
@@ -154,6 +146,9 @@ const dummyPossibleMoves = ['a2','a3', 'b1', 'b2', 'b3', 'c1', 'c2']
             // add the score returned
 
 
+
+
+
 const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
     
     if (possibleMoves.length === 0){ //BASE CASE
@@ -164,11 +159,11 @@ const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, count
         } else {
             return 0
         };
-    
     };
     
+    const scoreList = []
+    const moveList = []
     
-    const scoreList = [];
 
     possibleMoves.forEach(function(move){
         
@@ -178,7 +173,8 @@ const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, count
                     
         const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
         newPlayerArray.push(move); // add on the move
-
+        
+        moveList[moveIndex] = move
         scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter++, !aiTurn);
     })
 
@@ -191,45 +187,27 @@ const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, count
         }
     });
 
-    // console.log(scoreList);
+    moveToPlay = scoreList.indexOf(largestScore)
+    
+    console.log(scoreList);
+    console.log(moveList);
+
 
     return largestScore;
 
-}            
+}
 
-    
+const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
 
+    const scoreList = [];
+  
+    return scoreList.indexOf(minimax(thisPlayerArray, otherPlayerArray, possibleMoves))
 
-
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 //GLOBAL VARIABLES
+
 
 const player1 = {
     name: '',
@@ -250,7 +228,16 @@ const gameData = {
     previous: {},
 }
 
-
+const winningCombinations = [
+    ['a1', 'a2', 'a3'],
+    ['b1', 'b2', 'b3'],
+    ['c1', 'c2', 'c3'],
+    ['a1', 'b1', 'c1'],
+    ['a2', 'b2', 'c2'],
+    ['a3', 'b3', 'c3'],
+    ['a1', 'b2', 'c3'],
+    ['a3', 'b2', 'c1'],
+]
 
 let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
 let drawCount = 0; // counting the draws
