@@ -210,7 +210,7 @@ $(function(){
     // TURN OFF GAME BOARD AND UPDATE SCORES 
     const updatePage = function(){
 
-        // $('.board-spot').off('click'); // turn off the click events on the board
+        $('.board-spot').off('click'); // turn off the click events on the board
 
         // updatescores on page
         $('#player1-data .score').html(`${player1.winCount}`);
@@ -252,7 +252,7 @@ $(function(){
         const enteredName = $('#name-field').val();
         const selectedIcon = $('input[name="icons"]:checked').siblings().attr('src');
 
-        if (enteredName.length === 0 && selectedIcon === undefined){
+        if (enteredName.length === 0 && selectedIcon === undefined){ // conditionals for the submit button to force name and icon selection
             $('#name-field').addClass('input-req-box-shadow');
             $('#icon-grid').addClass('input-req-box-shadow');
             return
@@ -320,7 +320,6 @@ $(function(){
 
     // REMATCH BUTTON
     $(`#game-over-cover input[type="button"]`).on('click', function(){
-        debugger
           resetBoard();
           $("#game-over-cover").hide();
     })
