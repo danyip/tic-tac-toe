@@ -1,80 +1,92 @@
 // TODO: Make this actually take the best move....
+// PARENT TO MINIMAX
 const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
 
     
     const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
         
-        if (winTestArrow(thisPlayerArray, winningCombinations)){ // BASE CASE
+        // BASE CASE - if this is met, end the recursion
+        if (winTestArrow(thisPlayerArray, winningCombinations)){ // check for a win
 
-            return (aiTurn ? 10 + counter : counter - 10)
+            return (aiTurn ? 10 - counter : counter - 10) // AI turn return a score minus the depth, for the humans turn return the depth minus the score.
 
-        } else if (possibleMoves.length === 0){
+        } else if (possibleMoves.length === 0){ // check for a draw
 
-            return 0
+            return 0 // draws area a 0 score
         }
 
-        const scoreList = [];
+        // IF BASE CASE IS NOT MET
+        const scoreList = []; // make a variable to store a score for each possible move
 
-        possibleMoves.forEach(function(move){
+        possibleMoves.forEach(function(move){ // Loop though each possible move
             
             const remainingPossibleMoves = possibleMoves.slice(0);// make a copy of the remaining moves to play
-            let moveIndex = possibleMoves.indexOf(move)
-            remainingPossibleMoves.splice(moveIndex, 1); // take out the current move'
+            let moveIndex = possibleMoves.indexOf(move) // grab the index of the move we are testing
+            remainingPossibleMoves.splice(moveIndex, 1); // take out the move we are testing
 
             // console.log(counter);
                         
             const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
             newPlayerArray.push(move); // add on the move
+
+            // run mini max on the new scenario and store the resulting score in the scorelist
+            //                             swap turns by switching player order         increase the depth counter   swap the turn tracker
             scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
             
             // console.log('scorelist', scoreList);
         })
         
+        // PROCESS THE SCORE LIST
         let largestScore = 0; 
         let largestScoreIndex = 0;
 
         scoreList.forEach((score, index) => { // loop the scorelist
-            if (score > largestScore){ // if the current score is greater then largestScore
-                largestScore = score;
-                largestScoreIndex = index;  // update largest score
-                if (counter === 0){
-                    console.log('largestScore', largestScore)
-                    console.log('largestScoreIndex',largestScoreIndex)
-                }
+            if (Math.abs(score) > Math.abs(largestScore)){ // if the absolute value of the current score is greater then largestScore
+                largestScore = score; // store that score in the largest score variable
+                largestScoreIndex = index;  // store the index of that score in the scoreList (which is mapped to the same as the possible moves)
+                
+                // if (counter === 0){
+                //     console.log('largestScore', largestScore)
+                //     console.log('largestScoreIndex',largestScoreIndex)
+                // }
             }
         });
        
-        if (counter === 0){
+        // CHECK THE DEPTH
+        if (counter === 0){ // if we are on the first call of minimax
+
             console.log('scorelist in counter check', scoreList); 
             console.log('possible moves in counter check', possibleMoves);
-            return largestScoreIndex
-        } else {
-            return largestScore;
-        }
 
-    }
-        
-    const result = minimax(thisPlayerArray, otherPlayerArray, possibleMoves, 0, false);
+            return largestScoreIndex // return the index of the position with the largest score
+
+        } else { // if we are on a recursive call of minimax
+
+            return largestScore; // return the larges score value
+        }
+    } // end minimax()
+    
+    // CALL MINIMAX and store the value (the value will be the index of the move that maximises the AI score or minimises the players score)
+    const result = minimax(thisPlayerArray, otherPlayerArray, possibleMoves, 0, false); 
 
     console.log('result', result);
-    
     console.log(possibleMoves[result]);
     
-    return possibleMoves[result];
+    return possibleMoves[result]; // return the id of the spot to play
 
-}  
+} // end bestMove()
 
+// WIN CHECKER FOR MINIMAX
 const winTestArrow = function(playersMovesArray, winCombos){
     
-    if (winCombos.some(combo => {
+    return winCombos.some(combo => {
         return combo.every(index => {
             return playersMovesArray.includes(index);
         });
-    })) {
-        return true;                    
-    };
+    })
 };
-// GLOBAL VARIABLES
+
+
 const player1 = {
     name: '',
     spots: [],
@@ -87,12 +99,10 @@ const player2 = {
     winCount: 0,
     icon: ''
 }
-
 const gameData = {
     currentGame: 1,
     previous: {},
 }
-
 const winningCombinations = [
     ['a1', 'a2', 'a3'],
     ['b1', 'b2', 'b3'],
@@ -103,17 +113,14 @@ const winningCombinations = [
     ['a1', 'b2', 'c3'],
     ['a3', 'b2', 'c1'],
 ]
-
-let boardState = []; // pushing the id of each spot as it is played - this is to store previous games
+let boardState = []; // pushing the id of each spot as it is played
 let drawCount = 0; // counting the draws
 let p1Turn = true; // Variable to store whos turn it is
 let player1Selected = false; // Has player 1 entered their name and chosen an icon
 let player2Selected = false; // Has player 2 entered their name and chosen an icon
 let singlePlayerGame = false; // Triggers a game against the AI
 
-
 // CHECKING FOR WINS
-
 const winCheck = function(player){
 
     /*
@@ -129,7 +136,7 @@ const winCheck = function(player){
 
         const array = boardState.splice(0); // splice out the board state array
 
-        array.unshift(p1Turn) // add whos turn it is //TODO: this is happening at the wrong time, need to happen at the start of the game not the end.
+        array.unshift(p1Turn) // add whos turn it is
 
         gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
         
@@ -138,7 +145,6 @@ const winCheck = function(player){
 }
 
 // CHECK FOR DRAW
-
 const drawCheck = function(){
     if (boardState.length === 9){ // if the boardState array reaches length 9 and this function gets called it is a draw
         
@@ -147,7 +153,7 @@ const drawCheck = function(){
         
         const array = boardState.splice(0); // splice out the board state array
 
-        array.unshift(p1Turn); // add whos turn it is //TODO: this is happening at the wrong time, need to happen at the start of the game not the end.
+        array.unshift(p1Turn); // add whos turn it is
 
         gameData.previous['game'+ gameData.currentGame] = array; // create a key value pair to store the array
         
@@ -155,11 +161,8 @@ const drawCheck = function(){
     }
 }
 
-
-
 // DOCUMENT READY FUCNTION
 $(function(){
-
 
     //GAME SPOT CLICK HANDLER
     const handler = function(event){
@@ -168,39 +171,49 @@ $(function(){
 
         $('.hover-icon').remove(); // turns off the hover effect on the spot
 
-        if (boardState.includes(boardSpotId)){ // check if the spot has already been clicked
+        // check if the spot has already been clicked and abort if it has
+        if (boardState.includes(boardSpotId)){ 
             return;
         };
-
-        const currentPlayer = p1Turn? player1 : player2; // set the current player based on whos turn it is
+        
+        // set the current player based on whos turn it is
+        const currentPlayer = p1Turn? player1 : player2; 
         
         // mark the spot with the players logo
         const $newImg = $('<img class="placed-icon">');
         $newImg.attr('src', `${currentPlayer.icon}`);
         $(this).append($newImg);
 
-                
+        // update the game data        
         boardState.push(boardSpotId); // push the spot into the game array
         currentPlayer.spots.push(boardSpotId) // push the spot into the current players spots array
 
+        // check for a win or draw
         if (winCheck(currentPlayer)){
-            updatePage();
+            
+            updatePage(); // this function turns off the click events and updates the scoreboard
+
+            // fill in the game over screen and display it
             $("#game-over-cover p").html(`${currentPlayer.name} is the winner!`);
             $("#game-over-cover img").attr('src', `${currentPlayer.icon}`);
             $("#game-over-cover").css('display', 'flex');
             return;
 
         } else if (drawCheck()){
-            updatePage();
+
+            updatePage(); // this function turns off the click events and updates the scoreboard
+
+            // fill in the game over screen and display it
             $("#game-over-cover p").html(`It's a draw!`);
             $("#game-over-cover img").attr('src', ``);
             $("#game-over-cover").css('display', 'flex');
             return;
         } 
         
-        p1Turn = !p1Turn;// swap turns
+        // swap turns
+        p1Turn = !p1Turn;
 
-        // if its a single player game, trigger the AI to make a move
+        // if it's a single player game, trigger the AI to make a move
         if (singlePlayerGame) {
             aiMove();
         };
@@ -222,7 +235,7 @@ $(function(){
     // PREPARES THE BOARD FOR A NEW GAME
     const resetBoard = function(){
         
-        $('.placed-icon').remove(); // remove images from divs
+        $('.placed-icon').remove(); // remove icons from board
 
         $('.board-spot').on('click', handler); // turn the clicks back on
 
@@ -233,10 +246,10 @@ $(function(){
         p1Turn = true; // back to player 1 to start
     }
 
-    // WELCOME PAGE ICON SELECTION 
+    // ICON SELECTION EFFECT
     $('input[type=radio]').on('click',function(){
 
-        $('#icon-grid').removeClass('input-req-box-shadow')
+        $('#icon-grid').removeClass('input-req-box-shadow') // removes the input required border if it exists
 
         $('.icon').removeClass('icon-big');
         $('.icon').addClass('icon-small');
@@ -252,7 +265,8 @@ $(function(){
         const enteredName = $('#name-field').val();
         const selectedIcon = $('input[name="icons"]:checked').siblings().attr('src');
 
-        if (enteredName.length === 0 && selectedIcon === undefined){ // conditionals for the submit button to force name and icon selection
+        // conditionals for the submit button to force name and icon selection
+        if (enteredName.length === 0 && selectedIcon === undefined){ 
             $('#name-field').addClass('input-req-box-shadow');
             $('#icon-grid').addClass('input-req-box-shadow');
             return
@@ -264,9 +278,7 @@ $(function(){
             return
         }
 
-
-
-
+        // check if the first player has selected
         if (!player1Selected){
             player1.name = enteredName; //set the name in the players object
             player1.icon = selectedIcon; //set the icon in ple players object
@@ -280,6 +292,7 @@ $(function(){
 
             player1Selected = true;
 
+            // check if its a single player game
             if(singlePlayerGame){ // Set the ai to player 2
 
                 player2.name = 'Beep Bop Computer'; //set the name in the players object
@@ -327,10 +340,10 @@ $(function(){
     // AI TAKES A TURN
     const aiMove = function(){
         
-        //CHOOSE A SPOT
+        // choose a spot
         const aiPick = aiLogicV3();
             
-        //MARK THE SPOT AND FINISH THE TURN
+        // mark the spot and finish the turn
         const $newImg = $('<img class="placed-icon">'); //make a new img
         $newImg.attr('src', `${player2.icon}`); //assign it the p2 image
         $(`#${aiPick}`).append($newImg);//append it to the div
@@ -385,7 +398,6 @@ $(function(){
             gameBoard.push($(this).attr('id'))
         });
 
-         
         const availableSpots = gameBoard.slice(0);//make a copy of all board spots so i can
         boardState.forEach(function(spot){ //loop the current board state
             let i = availableSpots.indexOf(spot); //grab each taken spots array index in available spots
@@ -396,8 +408,6 @@ $(function(){
         if(availableSpots.includes('b2')){
             return 'b2'
         };
-
-
 
         // choose a random spot from the available spots
         const randomSpot = Math.floor(Math.random()*availableSpots.length);
@@ -418,9 +428,7 @@ $(function(){
             availableSpots.splice(i, 1) //remove them from the available spots
         });
 
-        
-        return bestMove(player2.spots, player1.spots, availableSpots)       
-        
+        return bestMove(player2.spots, player1.spots, availableSpots)         
     };
 
     // MULTIPLAYER BUTTON
