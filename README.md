@@ -1,6 +1,8 @@
 # Tic-Tac-Toe
 
-Welcome to my Project 0. A tic-tac-toe game created using HTML, CSS, JavaScript and jQuery.
+Welcome to my Project 0.
+
+It's a tic-tac-toe game built entirly from scratch using HTML, CSS, JavaScript and jQuery.
 
 ## Features
 
@@ -8,11 +10,12 @@ My build of the game has some cool features:
 - Allows a choice between Multiplayer (for 2 humans to play) and Single-Player (where you can play against the computer)
 
 - A very beatable AI
+
 - Human players can enter their name and choose from a selection of character icons
 
-- Once gameplay begins the game displays the current players turn by showing a ghost version of their icon over the square they hover
+- Once gameplay begins the game displays the current players turn by showing a ghosted version of their icon over the square they hover
 
-- Once the game is over, through a win or a draw the user is presented with a "Game Over" screen that displays the winning players icon and announces them as the the winner.
+- When the game is over, through a win or a draw the user is presented with a "Game Over" screen that displays the winning players icon and announces them as the the winner.
 - From the Game Over screen users can choose to have a rematch, which will begin the game again.
 
 - The game tracks each players score as well as the number of draws that have occured.
@@ -48,16 +51,19 @@ When the rematch button is clicked:
 - The game is set back to player 1's turn
 
 ## Wishlist
-- Update the game logic so after each turn the player who goes first changes sides
+- Make my implementation of Minimax algorithm work! Fix the AI
+- Make the game switch the starting player after each turn
+- Refactor!
 - Make a replay function to view previous games
-- Finish learning about Minimax algorithm and fix the AI
+
 
 
 ## Known Bugs
-- The minimax AI that is supposed to be unbeatable is very beatable
+- The AI that is using recursion and the minimax algorithm and should be unbeatable is absolutley beatable.
 
 
 ## Play the game
 
 [Tic-Tac-Toe](https://danyip.github.io/tic-tac-toe/)
+
 
