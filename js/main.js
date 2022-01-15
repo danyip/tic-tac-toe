@@ -1,5 +1,16 @@
 // TODO: Make this actually take the best move....
 // PARENT TO MINIMAX
+
+// TEST CASE 1
+// const p1Test = ['P1 HUMAN', 'a1', 'a2', 'b1'];
+// const p2Test = ['P2 AI', 'b2', 'c2'];
+// const possibleMovesTest = ['a3', 'b3', 'c1', 'c3' ];
+
+// TEST CASE 2
+const p1Test = ['P1 HUMAN', 'a1', 'a2', 'c1'];
+const p2Test = ['P2 AI', 'b1', 'b2'];
+const possibleMovesTest = ['a3', 'b3', 'c1', 'c2'];
+
 const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
 
     
@@ -7,8 +18,16 @@ const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
         
         // BASE CASE - if this is met, end the recursion
         if (winTestArrow(thisPlayerArray, winningCombinations)){ // check for a win
+            // console.log('Found a win for:', thisPlayerArray, 'at depth:', counter, 'aiTurn is:', aiTurn);
+            // console.log('The opponent is', otherPlayerArray);
+            
+            const score = (aiTurn ? 10 - counter : counter - 10)
+            // console.log('Returning score of', score);
 
-            return (aiTurn ? 10 - counter : counter - 10) // AI turn return a score minus the depth, for the humans turn return the depth minus the score.
+            // console.log(`
+            // `);
+
+            return score // AI turn return a score minus the depth, for the humans turn return the depth minus the score.
 
         } else if (possibleMoves.length === 0){ // check for a draw
 
@@ -24,11 +43,14 @@ const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
             let moveIndex = possibleMoves.indexOf(move) // grab the index of the move we are testing
             remainingPossibleMoves.splice(moveIndex, 1); // take out the move we are testing
 
-            // console.log(counter);
-                        
+            
+                                    
             const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
             newPlayerArray.push(move); // add on the move
 
+            if(counter === 0){
+                console.log('at a depth of 0', newPlayerArray, 'is playing', move);
+            }
             // run mini max on the new scenario and store the resulting score in the scorelist
             //                             swap turns by switching player order         increase the depth counter   swap the turn tracker
             scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
@@ -37,21 +59,30 @@ const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
         })
         
         // PROCESS THE SCORE LIST
-        let largestScore = 0; 
+        let largestScore = aiTurn? -Infinity : Infinity; 
         let largestScoreIndex = 0;
 
         scoreList.forEach((score, index) => { // loop the scorelist
-            if (Math.abs(score) > Math.abs(largestScore)){ // if the absolute value of the current score is greater then largestScore
-                largestScore = score; // store that score in the largest score variable
-                largestScoreIndex = index;  // store the index of that score in the scoreList (which is mapped to the same as the possible moves)
-                
-                // if (counter === 0){
-                //     console.log('largestScore', largestScore)
-                //     console.log('largestScoreIndex',largestScoreIndex)
-                // }
+            // if (Math.abs(score) > Math.abs(largestScore)){ // if the absolute value of the current score is greater then absolute value of largestScore
+            //     largestScore = score; // store that score in the largest score variable
+            //     largestScoreIndex = index;  // store the index of that score in the scoreList (which is mapped to the same as the possible moves)
+            // }
+            if (counter === 0){
+                console.log(largestScore, score, score > largestScore);
+            }
+            if (aiTurn){
+                if (score > largestScore) {
+                    largestScore = score;
+                    largestScoreIndex = index;
+                }
+            } else {
+                if (score < largestScore){
+                    largestScore = score;
+                    largestScoreIndex = index;
+                }
             }
         });
-       
+
         // CHECK THE DEPTH
         if (counter === 0){ // if we are on the first call of minimax
 
@@ -67,7 +98,7 @@ const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
     } // end minimax()
     
     // CALL MINIMAX and store the value (the value will be the index of the move that maximises the AI score or minimises the players score)
-    const result = minimax(thisPlayerArray, otherPlayerArray, possibleMoves, 0, false); 
+    const result = minimax(thisPlayerArray, otherPlayerArray, possibleMoves, 0, true); 
 
     console.log('result', result);
     console.log(possibleMoves[result]);
