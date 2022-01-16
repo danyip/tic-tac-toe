@@ -1,13 +1,7 @@
 const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
         
         // BASE CASE - if this is met, end the recursion
-        if (winTestArrow(thisPlayerArray, winningCombinations)){ // check for a win
-                        
-            const score = (aiTurn ? 10 - counter : counter - 10)
-            
-            return score // AI turn return a score minus the depth, for the humans turn return the depth minus the score.
-
-        } else if (possibleMoves.length === 0){ // check for a draw
+        if (possibleMoves.length === 0){ // check for a draw
 
             return 0 // draws area a 0 score
         }
@@ -27,7 +21,9 @@ const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, count
 
             let score
             if (winTestArrow(newPlayerArray, winningCombinations)){
+                
                 score = (aiTurn ? 10 - counter : counter - 10)
+
             } else {
                 score = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
             }
