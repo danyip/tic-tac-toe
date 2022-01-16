@@ -197,7 +197,7 @@ $(function(){
 
             // fill in the game over screen and display it
             $("#game-over-cover p").html(`It's a tie!`);
-            $("#game-over-cover img").attr('src', `/images/icons/tie.svg`);
+            $("#game-over-cover img").attr('src', `images/icons/tie.svg`);
             $("#game-over-cover").css('display', 'flex');
             return;
         } 
