@@ -4,12 +4,16 @@ Welcome to my Project 0.
 
 It's a tic-tac-toe game built entirly from scratch using HTML, CSS, JavaScript and jQuery.
 
+## Play the game
+
+[Tic-Tac-Toe](https://danyip.github.io/tic-tac-toe/)
+
 ## Features
 
 My build of the game has some cool features:
 - Allows a choice between Multiplayer (for 2 humans to play) and Single-Player (where you can play against the computer)
 
-- A very beatable AI
+- An unbeatable AI - powered by the minimax algorithm
 
 - Human players can enter their name and choose from a selection of character icons
 
@@ -51,19 +55,20 @@ When the rematch button is clicked:
 - The game is set back to player 1's turn
 
 ## Wishlist
-- Make my implementation of Minimax algorithm work! Fix the AI
+- Refactor! The whole thing is in dire need of a refactor.
 - Make the game switch the starting player after each turn
-- Refactor!
 - Make a replay function to view previous games
 
 
-
 ## Known Bugs
-- The AI that is using recursion and the minimax algorithm and should be unbeatable is absolutley beatable.
+- ~~The AI that is using recursion and the minimax algorithm and should be unbeatable is absolutley beatable.~~
 
+## Thoughts about the project
 
-## Play the game
+While its not the most concise or neatest code, I am really proud that I managed to implement the minimax algorithm using recursion. 
 
-[Tic-Tac-Toe](https://danyip.github.io/tic-tac-toe/)
+It was quite a struggle. Partly beacuse of the way I had setup the original game using alot of arrays, but also because recursion and algorithms were compleatly new concepts for me.
+
+Instead of re-writing the core of my game to make the algorithm easier to implement I decided to persist with what I already had. This choice ultimatly lead to alot of frustration, a few stack overflows (in the browser and in my brain) and an amazing learning experience. I learned so so much about debugging, the value of logging and how to use more effiecently use these tools find bugs in very complex problems.
 
 
