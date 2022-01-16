@@ -67,9 +67,6 @@ body {
     width: 100vw;
     height: 100vh;
     display: none;
-    /* display: flex; */
-    align-items: center;
-    justify-content: center;
     z-index: 1;
     font-size: 1.5em;
 }
@@ -111,7 +108,7 @@ body {
     margin: 0;
 }
 
-#start-wrapper, #game-over-wrapper, #welcome-wrapper {
+#welcome-wrapper {
     /* background-color: blue; */
     width: var(--main-width);
     margin: 0 auto;
@@ -122,10 +119,64 @@ body {
     text-align: center;
 }
 
+#game-over-wrapper{
+    /* background-color: blue; */
+    width: var(--main-width);
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    grid-template-areas: 
+    "gameover"
+    "icon"
+    "message"
+    "button";
+    
+}
+
+@media screen and (orientation: landscape) {
+
+    #game-over-wrapper{
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+        grid-template-areas: 
+            ". icon"
+            "gameover icon"
+            "message icon"
+            "button icon"
+            ". icon"
+    }
+}
 
 
-#game-over-wrapper h1, #game-over-wrapper p{
 
+#start-wrapper {
+    width: var(--main-width);
+    margin: 0 auto;
+    display: grid;
+    gap: 5px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "hello"
+        "instructions"
+        "name"
+        "icons"
+        "button";
+    text-align: center;
+}
+
+
+
+#game-over-wrapper h1{
+    grid-area: gameover;
+    margin: 10px 0;
+    font-size: 2.5rem;
+}
+
+#game-over-wrapper p{  
+    grid-area: message;
     margin: 10px 0
 }
 
@@ -134,6 +185,18 @@ body {
         flex-direction: row; 
 
     }
+}
+
+#start-wrapper h1, #start-wrapper p{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#name-field{
+    width: 250px;
+    height: fit-content;
+    margin: auto;
+    grid-area: name;
 }
 
 
@@ -145,16 +208,21 @@ body {
 
 #icon-grid{
     /* background: red; */
+    grid-area: icons;
+    align-self: center;
+    justify-self: center;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 10px;
-    margin: 20px 0;
+    margin: 20px;
     border-radius: 30px;
     transition: 200ms;
+    width: fit-content;
     /* border: 1px solid red */
 }
 
 .btn{
+    width: fit-content;
     font-family: 'Balsamiq Sans', cursive;
     font-size: 1.7rem;
     border-radius: 10px;
@@ -162,6 +230,23 @@ body {
     outline: none;
     opacity: 60%;
     transition: 200ms;
+    margin: auto;
+    height: fit-content;
+    grid-area: button;
+}
+
+@media screen and (max-width: 450px) and (orientation: landscape) {
+    #start-wrapper {
+    grid-template-columns: 1fr 1fr;    
+    grid-template-rows: 1fr, 1fr, 1fr, 1fr;
+    grid-template-areas: 
+        "hello icons"
+        "instructions icons"
+        "name icons"
+        "submit icons"
+}
+
+
 }
 
 .btn:hover{
@@ -173,7 +258,7 @@ body {
     font-size: 1.7rem;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 800px) and (orientation: portrait) {
     #icon-grid {
         grid-template-columns: 1fr 1fr 1fr;
     }
@@ -183,6 +268,8 @@ body {
     /* border: 1px solid black; */
     width: 120px;
     height: 120px;
+    align-self: center;
+    justify-self: center;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -240,12 +327,13 @@ main {
     height: fit-content;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-@media screen and (max-height: 680px) {
+@media screen and (orientation: landscape) {
     main {
         flex-direction: row;
-
     }
     
 }
@@ -261,8 +349,8 @@ main {
     gap: 5px;
     grid-template-columns: 1fr 1fr 1fr;
     width: fit-content;
-    margin: 0 auto;
-    margin-bottom: 30px;
+    margin: 30px auto;
+    /* margin-bottom: 30px; */
     position: relative;
 }
 
@@ -275,10 +363,46 @@ main {
     justify-content: center;
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 580px) and (orientation: portrait) {
     .board-spot{
         width: 92px;
         height: 92px;
+    }
+    #game-board {
+        gap: 3px;
+    }
+    
+}
+
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    .board-spot{
+        width: 80px;
+        height: 80px;
+    }
+    #game-board {
+        gap: 3px;
+    }
+    
+}
+
+@media screen and (max-height: 580px) and (orientation: landscape) {
+    .board-spot{
+        width: 92px;
+        height: 92px;
+    }
+    #game-board {
+        gap: 3px;
+    }
+    
+}
+
+@media screen and (max-height: 480px) and (orientation: landscape) {
+    .board-spot{
+        width: 80px;
+        height: 80px;
+    }
+    #game-board {
+        gap: 3px;
     }
     
 }
@@ -295,7 +419,9 @@ main {
 }
 
 .winner-icon {
-    height: 300px
+    height: 300px;
+    grid-area: icon;
+    margin: 0 auto;
 }
 
 .hover-icon {
@@ -316,8 +442,6 @@ main {
     align-items: end;
     
 }
-
-
 
 #player1-data {
     grid-area: playerx;
