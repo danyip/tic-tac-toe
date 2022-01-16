@@ -1,5 +1,3 @@
-
-// PARENT TO MINIMAX
 const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, counter, aiTurn){
         
         // BASE CASE - if this is met, end the recursion
@@ -15,64 +13,52 @@ const minimax = function(thisPlayerArray, otherPlayerArray, possibleMoves, count
         }
 
         // IF BASE CASE IS NOT MET
-        const scoreList = []; // make a variable to store a score for each possible move
+        let bestScore = aiTurn? -Infinity : Infinity; 
+        let bestScoreIndex
 
         possibleMoves.forEach(function(move){ // Loop though each possible move
             
             const remainingPossibleMoves = possibleMoves.slice(0);// make a copy of the remaining moves to play
             let moveIndex = possibleMoves.indexOf(move) // grab the index of the move we are testing
             remainingPossibleMoves.splice(moveIndex, 1); // take out the move we are testing
-
             
-                                    
             const newPlayerArray = thisPlayerArray.slice(0); // make a copy of the players current array
             newPlayerArray.push(move); // add on the move
 
-            if(counter === 0){
-                console.log('at a depth of 0', newPlayerArray, 'is playing', move);
+            let score
+            if (winTestArrow(newPlayerArray, winningCombinations)){
+                score = (aiTurn ? 10 - counter : counter - 10)
+            } else {
+                score = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
             }
-            // run mini max on the new scenario and store the resulting score in the scorelist
-            //                             swap turns by switching player order         increase the depth counter   swap the turn tracker
-            scoreList[moveIndex] = minimax(otherPlayerArray, newPlayerArray, remainingPossibleMoves, counter + 1, !aiTurn);
             
-            })
-        
-        // PROCESS THE SCORE LIST
-        let largestScore = aiTurn? -Infinity : Infinity; 
-        let largestScoreIndex = 0;
-
-        scoreList.forEach((score, index) => { // loop the scorelist
-            // if (Math.abs(score) > Math.abs(largestScore)){ // if the absolute value of the current score is greater then absolute value of largestScore
-            //     largestScore = score; // store that score in the largest score variable
-            //     largestScoreIndex = index;  // store the index of that score in the scoreList (which is mapped to the same as the possible moves)
-            // }
-            if (counter === 0){
-                console.log(largestScore, score, score > largestScore);
-            }
             if (aiTurn){
-                if (score > largestScore) {
-                    largestScore = score;
-                    largestScoreIndex = index;
+
+                if (score > bestScore){
+                    bestScore = score;
+                    bestScoreIndex = moveIndex;
                 }
             } else {
-                if (score < largestScore){
-                    largestScore = score;
-                    largestScoreIndex = index;
+
+                if (score < bestScore){
+                    bestScore = score;
+                    bestScoreIndex = moveIndex;
                 }
             }
-        });
+
+        })
 
         // CHECK THE DEPTH
         if (counter === 0){ // if we are on the first call of minimax
 
-            return largestScoreIndex // return the index of the position with the largest score
+            return bestScoreIndex // return the index of the position with the largest score
 
         } else { // if we are on a recursive call of minimax
 
-            return largestScore; // return the larges score value
+            return bestScore; // return the larges score value
         }
     } // end minimax()
-    
+
 const bestMove = function(thisPlayerArray, otherPlayerArray, possibleMoves){
 
     // CALL MINIMAX and store the value (the value will be the index of the move that maximises the AI score or minimises the players score)
@@ -317,7 +303,7 @@ $(function(){
 
             $('.icon').removeClass('icon-big'); // reset icon states for player 2
             $('.icon').removeClass('icon-small'); // reset icon states for player 2
-            $('#start-screen-cover h1').html('Hello Player 2') //change the message to player 2
+            $('#start-screen-cover h1').html('Player 2') //change the message to player 2
             $('#name-field').val('')
 
         } else {
